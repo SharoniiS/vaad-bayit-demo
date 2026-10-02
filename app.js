@@ -1,7 +1,7 @@
 // ===================================================================
 //  אתר ועד הבית, תצוגה ולוגיקה
 //  • ניתוב לפי hash:  #/home  #/payments  #/unit/<id>  #/collection/<id>
-//                      #/projects  #/project/<id>  #/docs  #/admin
+//                      #/projects  #/project/<id>  #/admin
 //  • כל הנתונים נטענים לזיכרון ומרונדרים מחדש אחרי כל שינוי.
 //  • עריכה זמינה רק במצב ניהול; הדיירים רואים את אותם מסכים לקריאה בלבד.
 // ===================================================================
@@ -36,7 +36,7 @@
   const FILE_ACCEPT = "image/*,video/*,application/pdf,.doc,.docx,.xls,.xlsx";
   const UNIT = "תת חלקה";
 
-  const S = { openCharges: new Set(), data: null, admin: false, routeKey: "", files: new Map(), urls: new Map(), docFilter: { project: "all", kind: "all" } };
+  const S = { openCharges: new Set(), data: null, admin: false, routeKey: "", files: new Map(), urls: new Map() };
   const $main = document.getElementById("main");
 
   /* ============================== עזרים ============================== */
@@ -104,8 +104,8 @@
     const remaining = due === null ? null : Math.max(due - paid, 0);
     return { st, due, paid, remaining, owed: future ? 0 : (remaining || 0) };
   }
-  const ST_LABEL = { paid: "שולם", partial: "שולם חלקית", unpaid: "טרם שולם", exempt: "פטור", future: "חודש עתידי" };
-  const ST_TONE = { paid: "ok", partial: "warn", unpaid: "neutral", exempt: "neutral", future: "neutral" };
+  const ST_LABEL = { paid: "שולם", partial: "שולם חלקית", unpaid: "טרם שולם", exempt: "פטור", future: "עוד לא הגיע המועד" };
+  const ST_TONE = { paid: "ok", partial: "warn", unpaid: "rose", exempt: "neutral", future: "neutral" };
   const ST_ICON = { paid: "check", partial: "circle-half-2", unpaid: "clock", exempt: "minus", future: "point" };
 
   function collectionProgress(c) {
@@ -148,7 +148,21 @@
   /* =========================== רכיבי תצוגה =========================== */
   const pill = (label, tone) => `<span class="pill tone-${tone}">${esc(label)}</span>`;
   const statusPill = s => { const st = STATUS[s] || STATUS.planning; return pill(st.label, st.tone); };
-  const projIcon = p => `<span class="picon">${icon(p.icon || "tool")}</span>`;
+  // צבע לכל פעולה, כמו התיקיות ב-DocuMate: לפי מילה בשם, אחרת לפי המזהה (קבוע לאורך זמן).
+  // הצבע אף פעם לא הסימן היחיד: השם והסמל תמיד לידו.
+  const TONES = ["green", "rose", "blue", "amber", "teal", "violet"];
+  const TONE_WORDS = [[/גינ|גנן|עצים|דשא/, "green"], [/ריסוס|הדבר|מזיק/, "rose"], [/חשמל|תאור|נורה|נורות/, "amber"],
+    [/מדרג|צבע|שיפוץ|קונסטרוק|סדק/, "blue"], [/מים|אינסטל|איטום|גג|נזיל/, "teal"]];
+  function toneOf(p) {
+    if (!p) return "blue";
+    const hit = TONE_WORDS.find(([re]) => re.test(p.title || ""));
+    if (hit) return hit[1];
+    let h = 0;
+    for (const ch of String(p.id)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+    return TONES[h % TONES.length];
+  }
+  const DUES_TONE = "violet";
+  const projIcon = p => `<span class="picon t-${toneOf(p)}">${icon(p.icon || "tool")}</span>`;
   const back = (href, label) => `<a class="back" href="${href}">${icon("arrow-right")}${esc(label)}</a>`;
   const adminBtn = (act, label, attrs = "", ic = "plus") => S.admin ? `<button class="btn small" data-act="${act}" ${attrs}>${icon(ic)}${esc(label)}</button>` : "";
   const editBtn = (act, attrs) => S.admin ? `<button class="icon-btn" data-act="${act}" ${attrs} aria-label="עריכה">${icon("pencil")}</button>` : "";
@@ -236,17 +250,18 @@
       </section>
 
       <h2 class="sec">גבייה</h2>
-      ${fm ? `<a class="card link coll-card" href="#/dues">
-          <div class="row-between"><span class="row-title">${icon("calendar")} דמי ועד ${esc(monthLong(fm.month))}</span>${icon("chevron-left", "muted")}</div>
+      ${fm ? `<a class="card link coll-card toned t-${DUES_TONE}" href="#/dues">
+          <div class="row-between"><span class="row-title"><span class="picon sm t-${DUES_TONE}">${icon("calendar")}</span>דמי ועד ${esc(monthLong(fm.month))}</span>${icon("chevron-left", "muted")}</div>
           ${progressBar(fpr.paid, fpr.total)}
           <div class="muted small">${fpr.paid} מתוך ${fpr.total} שילמו את החודש</div>
         </a>` : ""}
       ${cols.map(c => {
         const pr = collectionProgress(c);
-        return `<a class="card link coll-card" href="#/collection/${esc(c.id)}">
-          <div class="row-between"><span class="row-title">${esc(c.title)}</span>${icon("chevron-left", "muted")}</div>
+        const cp = c.projectId ? find("projects", c.projectId) : null;
+        return `<a class="card link coll-card toned t-${toneOf(cp)}" href="#/collection/${esc(c.id)}">
+          <div class="row-between"><span class="row-title"><span class="picon sm t-${toneOf(cp)}">${icon(cp ? cp.icon || "tool" : "coin")}</span>${esc(c.title)}</span>${icon("chevron-left", "muted")}</div>
           ${collBar(pr)}
-          <div class="muted small">${pr.paid} מתוך ${pr.total} שילמו · ${moneyLine(pr)}</div>
+          <div class="small">${pr.paid} מתוך ${pr.total} שילמו</div><div class="muted small">${moneyLine(pr)}</div>
         </a>`;
       }).join("")}
       ${!fm && !cols.length ? empty("אין גביות פתוחות כרגע.") : ""}
@@ -258,63 +273,106 @@
         </a>`).join("") || empty("עוד לא הוגדרו פעולות.")}
       </div>
 
-      ${feed.length ? `<h2 class="sec">עדכונים אחרונים</h2>
-      <div class="card list">${feed.map(f => {
-        const p = f.projectId ? find("projects", f.projectId) : null;
-        return `<a class="row link" href="${p ? `#/project/${esc(p.id)}` : "#/docs"}">
-          <span class="doc-icon">${icon(f.kind === "update" ? "message-2" : (KINDS[f.kind]?.icon || "file"))}</span>
-          <div class="grow"><div class="small">${esc(f.text)}</div><div class="muted xs">${p ? esc(p.title) : "כללי"}${f.date ? " · " + fmtDate(f.date) : ""}</div></div>
-        </a>`;
-      }).join("")}</div>` : ""}
+      ${feed.length ? `<details class="card feed" ${S.feedOpen ? "open" : ""}>
+        <summary><span class="feed-title">${icon("bell")} עדכונים אחרונים</span><span class="feed-count">${feed.length}</span></summary>
+        <div class="list">${feed.map(f => {
+          const p = f.projectId ? find("projects", f.projectId) : null;
+          return `<a class="row link" href="${p ? `#/project/${esc(p.id)}` : "#/projects"}">
+            ${p ? projIcon(p) : `<span class="doc-icon">${icon("file")}</span>`}
+            <div class="grow"><div>${esc(f.text)}</div><div class="muted small">${p ? esc(p.title) : ""}${p && f.date ? " · " : ""}${f.date ? fmtDate(f.date) : ""}</div></div>
+          </a>`;
+        }).join("")}</div>
+      </details>` : ""}
     `;
   };
 
-  // דמי ועד: שורה לכל חודש, עמודה לכל תת חלקה
+  // מצב דמי הוועד של תת חלקה במשפט אחד: "שולם עד מרץ 2027 (מראש)" או "לא שולמו 2 חודשים: ..."
+  function duesSummary(u) {
+    const rows = duesMonths().map(c => ({ c, s: cellStatus(c, u.id) }));
+    const due = rows.filter(x => x.s.st !== "future" && x.s.st !== "exempt");
+    const open = due.filter(x => x.s.st === "unpaid" || x.s.st === "partial");
+    if (!due.length) return { ok: true, text: "אין עדיין חודשים לתשלום" };
+    if (!open.length) {
+      let last = null;
+      for (const x of rows) { if (x.s.st === "paid" || x.s.st === "exempt") last = x.c; else break; }
+      return { ok: true, text: last ? `שולם עד ${monthLong(last.month)}${last.month > curMonth() ? " (מראש)" : ""}` : "שולם" };
+    }
+    const owed = sum(open.map(x => x.s.owed));
+    const tail = owed ? ` (${money(owed)})` : "";
+    if (open.length === 1) return { ok: false, text: `לא שולם ${esc(monthLong(open[0].c.month))}${tail}` };
+    const names = open.length <= 3 ? `: ${open.map(x => esc(monthShort(x.c.month))).join(", ")}` : "";
+    return { ok: false, text: `לא שולמו ${open.length} חודשים${names}${tail}` };
+  }
+
+  // דמי ועד: חודש אחד בכל פעם (רשימה במילים), מצב כל תת חלקה, והטבלה המלאה מקופלת
   VIEWS.dues = () => {
     const ms = duesMonths();
     const us = units();
-    const cur = curMonth();
+    const now = curMonth();
     const amounts = [...new Set(ms.map(c => c.amount).filter(a => a !== null && a !== undefined && a !== ""))];
     const amountLine = !ms.length ? ""
       : !amounts.length ? `<span class="warn-text">הסכום החודשי טרם נקבע</span>`
-      : amounts.length === 1 ? `${money(amounts[0])} לחודש ל${UNIT}`
+      : amounts.length === 1 ? `${money(amounts[0])} לחודש לכל ${UNIT}`
       : "הסכום משתנה לפי חודש";
-    const range = ms.length ? `${esc(monthLong(ms[0].month))} עד ${esc(monthLong(ms[ms.length - 1].month))}` : "";
-    const fm = focusMonth();
-    const fpr = fm ? collectionProgress(fm) : null;
+    const head = `<div class="page-head">
+        <div><h1>דמי ועד</h1><div class="muted">${amountLine}</div></div>
+        <div class="head-actions">${adminBtn("dues-settings", "הגדרות", "", "adjustments")}</div>
+      </div>`;
+    if (!ms.length) return head + empty("עוד לא הוגדרו חודשים.", S.admin ? `<div class="mt">${adminBtn("dues-settings", "הגדרת חודשים וסכום", "", "adjustments")}</div>` : "");
+    if (!us.length) return head + empty("לא הוגדרו תתי חלקות.");
 
-    const table = !ms.length ? empty("עוד לא הוגדרו חודשים.", S.admin ? `<div class="mt">${adminBtn("dues-settings", "הגדרת חודשים וסכום", "", "adjustments")}</div>` : "")
-      : !us.length ? empty("לא הוגדרו תתי חלקות.")
-      : `<div class="grid-wrap"><table class="pgrid dgrid">
-        <thead><tr><th class="sticky">חודש</th>${us.map(u =>
-          `<th><button class="unit-head" data-act="dues-unit" data-unit="${esc(u.id)}" aria-label="${unitName(u)}">${esc(u.label)}</button></th>`).join("")}</tr></thead>
+    const sel = ms.find(c => c.id === S.duesMonth) || focusMonth();
+    const i = ms.indexOf(sel);
+    const pr = collectionProgress(sel);
+    const when = sel.month === now ? "החודש הנוכחי" : sel.month > now ? "חודש עתידי" : "חודש שעבר";
+
+    const fullTable = `<div class="grid-wrap"><table class="pgrid dgrid">
+        <thead>
+          <tr class="units-caption"><th class="sticky"></th><th colspan="${us.length}">${UNIT}</th></tr>
+          <tr><th class="sticky"></th>${us.map(u =>
+            `<th><button class="unit-head" data-act="dues-unit" data-unit="${esc(u.id)}" aria-label="${unitName(u)}">${esc(u.label)}</button></th>`).join("")}</tr>
+        </thead>
         <tbody>${ms.map(c => {
-          const pr = collectionProgress(c);
-          return `<tr class="${c.month === cur ? "now" : ""}">
-            <th class="sticky"><a href="#/collection/${esc(c.id)}"><span>${esc(monthShort(c.month))}</span><span class="xs muted">${pr.paid}/${pr.total}</span></a></th>
+          const p = collectionProgress(c);
+          return `<tr class="${c.month === now ? "now" : ""}">
+            <th class="sticky"><a href="#/collection/${esc(c.id)}"><span>${esc(monthShort(c.month))}</span><span class="xs muted">${p.paid}/${p.total}</span></a></th>
             ${us.map(u => {
               const s = cellStatus(c, u.id);
-              return `<td><button class="cell sm st-${s.st}" data-act="dues-cell" data-unit="${esc(u.id)}" data-coll="${esc(c.id)}" aria-label="${unitName(u)}, ${esc(monthLong(c.month))}: ${ST_LABEL[s.st]}">${icon(ST_ICON[s.st])}</button></td>`;
+              return `<td><button class="cell sm st-${s.st}" data-act="dues-cell" data-unit="${esc(u.id)}" data-coll="${esc(c.id)}" aria-label="${unitName(u)}, ${esc(monthLong(c.month))}: ${ST_LABEL[s.st]}">${s.st === "future" ? "" : icon(ST_ICON[s.st])}</button></td>`;
             }).join("")}
           </tr>`;
         }).join("")}</tbody>
-        <tfoot><tr><th class="sticky xs">שולמו</th>${us.map(u => `<td class="xs">${ms.filter(c => cellStatus(c, u.id).st === "paid").length}</td>`).join("")}</tr></tfoot>
       </table></div>
-      <div class="legend">${["paid", "partial", "unpaid", "future", "exempt"].map(k => `<span><span class="cell mini st-${k}">${icon(ST_ICON[k])}</span>${ST_LABEL[k]}</span>`).join("")}</div>`;
+      <div class="legend">${["paid", "partial", "unpaid", "exempt"].map(k => `<span><span class="cell mini st-${k}">${icon(ST_ICON[k])}</span>${ST_LABEL[k]}</span>`).join("")}<span><span class="cell mini st-future"></span>חודש עתידי</span></div>`;
 
     return `
-      <div class="page-head">
-        <div><h1>דמי ועד</h1><div class="muted small">${range}${range && amountLine ? " · " : ""}${amountLine}</div></div>
-        <div class="head-actions">${adminBtn("dues-settings", "הגדרות", "", "adjustments")}</div>
+      ${head}
+      <div class="card month-nav toned t-${DUES_TONE}">
+        <div class="mnav">
+          <button class="btn mnav-btn" data-act="dues-step" data-dir="-1" ${i <= 0 ? "disabled" : ""}>${icon("chevron-right")}הקודם</button>
+          <div class="mnav-title"><div class="mnav-month">${esc(monthLong(sel.month))}</div><div class="muted small">${when}</div></div>
+          <button class="btn mnav-btn" data-act="dues-step" data-dir="1" ${i >= ms.length - 1 ? "disabled" : ""}>הבא${icon("chevron-left")}</button>
+        </div>
+        <div class="mnav-sum">שילמו <b>${pr.paid} מתוך ${pr.total}</b>${hasAmount(sel) ? `, נגבו ${money(pr.collected)}` : ""}</div>
+        ${progressBar(pr.paid, pr.total)}
+        ${sel.month !== now && ms.some(c => c.month === now) ? `<button class="link-btn" data-act="dues-now">חזרה לחודש הנוכחי</button>` : ""}
       </div>
-      ${fpr ? `<div class="card">
-        <div class="row-between"><span class="row-title">${esc(monthLong(fm.month))}</span><span class="small">${fpr.paid} מתוך ${fpr.total} שילמו</span></div>
-        ${progressBar(fpr.paid, fpr.total)}
-      </div>` : ""}
-      <p class="muted small">${S.admin
-        ? "לחיצה על משבצת ריקה מסמנת שהחודש שולם (אפשר לבטל מיד). לחיצה על משבצת מסומנת פותחת את פרטי התשלום. לחיצה על מספר תת חלקה מאפשרת לסמן כמה חודשים בבת אחת."
-        : "כל שורה היא חודש וכל עמודה היא תת חלקה. לחיצה על מספר תת חלקה מציגה את ההיסטוריה שלה."}</p>
-      ${table}
+      <div class="card">${statusTable(sel)}</div>
+
+      <h2 class="sec">מצב כל ${UNIT} עד היום</h2>
+      <div class="card"><div class="stable">${us.map(u => {
+        const d = duesSummary(u);
+        return `<a class="srow" href="#/unit/${esc(u.id)}">
+          <span class="srow-unit"><b>${esc(u.label)}</b>${u.owners ? `<span class="muted small">${esc(u.owners)}</span>` : ""}</span>
+          <span class="srow-text st-text-${d.ok ? "paid" : "unpaid"}">${d.text}</span>
+          <span class="cell st-${d.ok ? "paid" : "unpaid"}">${icon(d.ok ? "check" : "clock")}</span>
+        </a>`;
+      }).join("")}</div></div>
+
+      <details class="card full-table" ${S.duesTableOpen ? "open" : ""}>
+        <summary>הטבלה המלאה של כל החודשים</summary>
+        ${fullTable}
+      </details>
     `;
   };
 
@@ -322,7 +380,7 @@
   function statusTable(c) {
     return `<div class="stable">${units().map(u => {
       const s = cellStatus(c, u.id);
-      const text = s.st === "paid" ? `שולם${s.paid ? ` · ${money(s.paid)}` : ""}`
+      const text = s.st === "paid" ? `${c.month && c.month > curMonth() ? "שולם מראש" : "שולם"}${s.paid ? ` · ${money(s.paid)}` : ""}`
         : s.st === "partial" ? `שולם חלקית · ${money(s.paid)}${s.due !== null ? ` מתוך ${money(s.due)}` : ""}`
         : ST_LABEL[s.st];
       return `<button class="srow" data-act="cell" data-unit="${esc(u.id)}" data-coll="${esc(c.id)}" aria-label="${unitName(u)}: ${ST_LABEL[s.st]}">
@@ -358,11 +416,11 @@
       bar = collBar(pr);
     } else meta = "טרם נפתחה גבייה";
     const body = c
-      ? `${pr.target ? `<div class="muted xs target-src">הסכום הנדרש: ${esc(pr.target.source)}</div>` : ""}${statusTable(c)}${S.admin ? `<div class="charge-actions">${adminBtn("edit-collection", "עריכת הגבייה", `data-id="${esc(c.id)}"`, "pencil")}</div>` : ""}`
+      ? `${pr.target && S.admin ? `<div class="muted xs target-src">הסכום הנדרש: ${esc(pr.target.source)}</div>` : ""}${statusTable(c)}${S.admin ? `<div class="charge-actions">${adminBtn("edit-collection", "עריכת הגבייה", `data-id="${esc(c.id)}"`, "pencil")}</div>` : ""}`
       : `<p class="muted small">עדיין לא נפתחה גבייה לפעולה זו.</p>${S.admin ? adminBtn("new-charge", "פתיחת גבייה", `data-project="${esc(p.id)}"`) : ""}`;
-    return `<div class="card charge ${open ? "open" : ""} ${c ? "" : "no-charge"}">
+    return `<div class="card charge toned t-${toneOf(p)} ${open ? "open" : ""} ${c ? "" : "no-charge"}">
       <button class="charge-head" data-act="toggle-charge" data-key="${esc(key)}" aria-expanded="${open}">
-        <span class="picon">${icon(p ? p.icon || "tool" : "coin")}</span>
+        <span class="picon t-${toneOf(p)}">${icon(p ? p.icon || "tool" : "coin")}</span>
         <span class="grow"><span class="row-title">${esc(title)}</span><span class="muted small">${meta}</span>${bar}</span>
         ${icon(open ? "chevron-up" : "chevron-down", "muted chev")}
       </button>
@@ -374,7 +432,6 @@
     const items = chargeItems();
     return `
       <div class="page-head"><h1>גביות</h1><div class="head-actions">${adminBtn("edit-collection", "גבייה כללית")}</div></div>
-      <p class="muted small">גבייה לכל פעולה בבניין. לחיצה על פעולה פותחת את מצב התשלומים שלה. ${S.admin ? "לחיצה על \"טרם שולם\" מסמנת מיד \"שולם\" בסכום הגבייה (אפשר לבטל מיד); לחיצה על \"שולם\" פותחת את פרטי התשלום." : ""} דמי הוועד החודשיים נמצאים בלשונית <a href="#/dues">דמי ועד</a>.</p>
       ${items.length ? items.map(chargeCard).join("") : empty("אין גביות.")}
       ${items.some(x => x.c) ? `<div class="legend">${["paid", "partial", "unpaid", "exempt"].map(k => `<span><span class="cell mini st-${k}">${icon(ST_ICON[k])}</span>${ST_LABEL[k]}</span>`).join("")}</div>` : ""}
     `;
@@ -410,8 +467,8 @@
       ${dues.length ? `<h2 class="sec">דמי ועד</h2>
       <div class="card">
         <div class="row-between">
-          <span class="small">שולמו ${duesPaid} מתוך ${duesTillNow.length} חודשים עד היום</span>
-          ${duesOpen ? pill(`${duesOpen} פתוחים`, "warn") : duesTillNow.length ? pill("מעודכן", "ok") : ""}
+          <span class="srow-text st-text-${duesSummary(u).ok ? "paid" : "unpaid"}">${duesSummary(u).text}</span>
+          <span class="cell mini st-${duesSummary(u).ok ? "paid" : "unpaid"}">${icon(duesSummary(u).ok ? "check" : "clock")}</span>
         </div>
         <div class="month-chips">${dues.map(({ c, s }) =>
           `<button class="mchip st-${s.st}" data-act="dues-chip" data-unit="${esc(u.id)}" data-coll="${esc(c.id)}" aria-label="${esc(monthLong(c.month))}: ${ST_LABEL[s.st]}">${icon(ST_ICON[s.st])}<span>${esc(monthShort(c.month))}</span></button>`).join("")}</div>
@@ -467,7 +524,7 @@
       <div class="card">
         ${c.series ? progressBar(pr.paid, pr.total) : collBar(pr)}
         <div class="small"><b>${pr.paid} מתוך ${pr.total} שילמו</b> · ${moneyLine(pr)}</div>
-        ${pr.target ? `<div class="muted xs">הסכום הנדרש: ${esc(pr.target.source)}</div>` : ""}
+        ${pr.target && S.admin ? `<div class="muted xs">הסכום הנדרש: ${esc(pr.target.source)}</div>` : ""}
       </div>
       <div class="card">${statusTable(c)}</div>
     `;
@@ -481,7 +538,7 @@
       const media = docs.filter(d => PHOTO_KINDS.includes(d.kind)).flatMap(d => d.files || []);
       const photos = media.filter(f => !isVideo(f)).length, videos = media.filter(isVideo).length;
       const files = docs.filter(d => !PHOTO_KINDS.includes(d.kind)).length;
-      return `<a class="card link prj-card" href="#/project/${esc(p.id)}">
+      return `<a class="card link prj-card toned t-${toneOf(p)}" href="#/project/${esc(p.id)}">
         <div class="row">${projIcon(p)}<div class="grow"><div class="row-title">${esc(p.title)}</div></div>${statusPill(p.status)}</div>
         ${p.statusNote ? `<div class="small">${esc(p.statusNote)}</div>` : ""}
         <div class="muted xs meta">${files ? `${icon("files")} ${files === 1 ? "מסמך אחד" : files + " מסמכים"}` : ""}${photos ? ` ${icon("photo")} ${photos === 1 ? "תמונה אחת" : photos + " תמונות"}` : ""}${videos ? ` ${icon("video")} ${videos === 1 ? "סרטון אחד" : videos + " סרטונים"}` : ""}</div>
@@ -518,9 +575,9 @@
       ${p.statusNote ? `<div class="callout">${esc(p.statusNote)}</div>` : ""}
       ${p.summary ? `<div class="card prose">${esc(p.summary)}</div>` : ""}
 
-      ${cols.map(c => { const pr = collectionProgress(c); return `<a class="card link coll-card" href="#/collection/${esc(c.id)}">
+      ${cols.map(c => { const pr = collectionProgress(c); return `<a class="card link coll-card toned t-${toneOf(p)}" href="#/collection/${esc(c.id)}">
         <div class="row-between"><span class="row-title">${icon("coin")} גבייה: ${esc(c.title)}</span>${icon("chevron-left", "muted")}</div>
-        ${collBar(pr)}<div class="muted small">${pr.paid} מתוך ${pr.total} שילמו · ${moneyLine(pr)}</div></a>`; }).join("")}
+        ${collBar(pr)}<div class="small">${pr.paid} מתוך ${pr.total} שילמו</div><div class="muted small">${moneyLine(pr)}</div></a>`; }).join("")}
 
       ${section("עדכונים", `<div class="card list">${ups.map(u => `<div class="row">
           <div class="grow"><div class="muted xs">${fmtDate(u.date)}</div><div class="prose">${esc(u.text)}</div></div>${editBtn("edit-update", `data-id="${esc(u.id)}"`)}
@@ -542,22 +599,6 @@
         </div>` : ""}
 
       ${section(KINDS.other.section, `<div class="card list">${docsOf(p.id, "other").map(d => docRow(d)).join("")}</div>`, "add-doc", docAttrs("other"), docsOf(p.id, "other").length)}
-    `;
-  };
-
-  VIEWS.docs = () => {
-    const f = S.docFilter;
-    const list = T("documents")
-      .filter(d => f.project === "all" || (f.project === "general" ? !d.projectId : d.projectId === f.project))
-      .filter(d => f.kind === "all" || d.kind === f.kind)
-      .filter(d => { const p = d.projectId && find("projects", d.projectId); return S.admin || !p || !p.archived; })
-      .sort(byDateDesc);
-    const chip = (group, value, label) => `<button class="chip filter ${f[group] === value ? "on" : ""}" data-act="doc-filter" data-group="${group}" data-value="${esc(value)}">${esc(label)}</button>`;
-    return `
-      <div class="page-head"><h1>מסמכים</h1><div class="head-actions">${adminBtn("add-doc", "מסמך", `data-project="" data-kind="other"`)}</div></div>
-      <div class="chips scroll">${chip("project", "all", "הכול")}${projects().map(p => chip("project", p.id, p.title)).join("")}${chip("project", "general", "כללי")}</div>
-      <div class="chips scroll">${chip("kind", "all", "כל הסוגים")}${KIND_ORDER.map(k => chip("kind", k, KINDS[k].label)).join("")}</div>
-      ${list.length ? `<div class="card list">${list.map(d => docRow(d, { showProject: true, showKind: true })).join("")}</div>` : empty("אין מסמכים להצגה.")}
     `;
   };
 
@@ -627,7 +668,7 @@
     const [name, id] = h.split("/");
     return { name: VIEWS[name] ? name : "home", id: id ? decodeURIComponent(id) : null };
   }
-  const TAB_OF = { home: "home", dues: "dues", payments: "payments", projects: "projects", project: "projects", docs: "docs" };
+  const TAB_OF = { home: "home", dues: "dues", payments: "payments", projects: "projects", project: "projects" };
 
   function render() {
     if (!S.data) return;
@@ -1112,7 +1153,7 @@
       title: doc ? "עריכת מסמך" : `הוספת ${KINDS[k].label}`,
       fields: [
         { name: "kind", label: "סוג", type: "select", value: k, options: KIND_ORDER.map(x => ({ value: x, label: KINDS[x].label })) },
-        { name: "projectId", label: "שייך ל", type: "select", value: doc ? doc.projectId || "" : projectId || "", options: [{ value: "", label: "כללי (לא שייך לפעולה)" }, ...projects(true).map(p => ({ value: p.id, label: p.title }))] },
+        { name: "projectId", label: "שייך ל", type: "select", value: doc ? doc.projectId || "" : projectId || (projects()[0] || {}).id, options: [...(doc && !doc.projectId ? [{ value: "", label: "ללא פעולה" }] : []), ...projects(true).map(p => ({ value: p.id, label: p.title }))] },
         { name: "title", label: "כותרת", type: "text", value: doc ? doc.title : "", placeholder: KINDS[k].ph },
         { name: "supplier", label: "ספק / גורם מקצועי", type: "text", value: doc ? doc.supplier : "", showWhen: "kind:report,quote,receipt" },
         { name: "amount", label: "סכום (₪)", type: "number", value: doc ? doc.amount : "", showWhen: "kind:quote,receipt", hint: "בקבלה, הסכום נרשם כהוצאה מהקופה." },
@@ -1265,7 +1306,9 @@
     try {
       const lib = await loadPdfJs();
       const data = new Uint8Array(await (await fetch(url)).arrayBuffer());
-      const pdf = await lib.getDocument({ data }).promise;
+      const assets = "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/";
+      // disableFontFace: בלי זה מסמכים בעברית יוצאים לפעמים משובשים
+      const pdf = await lib.getDocument({ data, disableFontFace: true, cMapUrl: assets + "cmaps/", cMapPacked: true, standardFontDataUrl: assets + "standard_fonts/" }).promise;
       body.innerHTML = "";
       const width = Math.min(body.clientWidth - 16, 900);
       const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
@@ -1349,6 +1392,14 @@
         else location.hash = "#/unit/" + ds.unit;
         break;
       case "dues-settings": duesSettingsSheet(); break;
+      case "dues-step": {
+        const ms = duesMonths();
+        const cur = ms.find(c => c.id === S.duesMonth) || focusMonth();
+        const next = ms[ms.indexOf(cur) + Number(ds.dir)];
+        if (next) { S.duesMonth = next.id; render(); }
+        break;
+      }
+      case "dues-now": S.duesMonth = null; render(); break;
       case "toggle-charge":
         if (S.openCharges.has(ds.key)) S.openCharges.delete(ds.key); else S.openCharges.add(ds.key);
         render();
@@ -1379,7 +1430,6 @@
       case "edit-doc": docSheet({ doc: find("documents", ds.id) }); break;
       case "edit-settings": settingsSheet(); break;
       case "lightbox": openLightbox(ds.group, ds.key); break;
-      case "doc-filter": S.docFilter[ds.group] = ds.value; render(); break;
       case "admin-login": await DB.signInAdmin(); S.admin = true; render(); break;
       case "admin-logout": await DB.signOut(); S.admin = false; location.hash = "#/home"; render(); break;
       case "reset-local":
@@ -1388,6 +1438,13 @@
         break;
     }
   });
+
+  document.addEventListener("toggle", e => {
+    const c = e.target.classList;
+    if (!c) return;
+    if (c.contains("full-table")) S.duesTableOpen = e.target.open;
+    if (c.contains("feed")) S.feedOpen = e.target.open;
+  }, true);
 
   document.addEventListener("keydown", e => {
     if (e.key !== "Escape") return;

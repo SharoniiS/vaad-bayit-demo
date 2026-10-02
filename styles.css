@@ -522,3 +522,75 @@ details.field summary { cursor: pointer; font-size: 14px; font-weight: 500; padd
 }
 .lightbox video { max-width: 100%; max-height: calc(100% - 90px); background: #000; }
 .admin-banner.demo { background: var(--info-bg); color: var(--info); }
+
+/* ---------- דמי ועד: ניווט בין חודשים ---------- */
+.month-nav { padding: 14px 14px 12px; }
+.mnav { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.mnav-btn { min-height: 48px; padding: 0 14px; font-size: 16px; gap: 2px; }
+.mnav-btn:disabled { opacity: .35; cursor: default; }
+.mnav-title { text-align: center; flex: 1; min-width: 0; }
+.mnav-month { font-size: 22px; font-weight: 700; line-height: 1.25; }
+.mnav-sum { font-size: 16px; margin-top: 12px; }
+.link-btn { background: none; border: 0; padding: 6px 0 0; font: inherit; font-size: 15px; color: var(--accent-text); text-decoration: underline; cursor: pointer; }
+a.srow { text-decoration: none; }
+
+/* הטבלה המלאה, מקופלת */
+.full-table { padding: 0; margin-top: 20px; }
+.full-table > summary {
+  list-style: none; cursor: pointer; padding: 16px; font-weight: 500;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.full-table > summary::-webkit-details-marker { display: none; }
+.full-table > summary::after { content: "+"; font-size: 22px; color: var(--muted); line-height: 1; }
+.full-table[open] > summary::after { content: "−"; }
+.full-table .grid-wrap { border: 0; border-top: 1px solid var(--border); border-radius: 0; }
+.full-table .legend { padding: 0 12px 12px; }
+.dgrid .units-caption th { font-size: 13px; color: var(--muted); font-weight: 500; padding: 8px 0 0; border-bottom: 0; text-align: center; }
+.dgrid .cell.st-future { border: 1px dashed var(--border); }
+.mnav-btn { padding: 0 10px; font-size: 15px; }
+.mnav-month { font-size: 20px; white-space: nowrap; }
+
+/* ---------- צבעים לפי פעולה (מתוך הטוקנים של DocuMate) ---------- */
+:root { --rose-soft: #f8e9e6; --rose-strong: #9b4d3f; }
+.t-green  { --t-soft: #e6f2ec; --t-strong: #2f6b4f; }
+.t-rose   { --t-soft: #f8e9e6; --t-strong: #9b4d3f; }
+.t-blue   { --t-soft: #e7eef7; --t-strong: #35577f; }
+.t-violet { --t-soft: #ece8f5; --t-strong: #5d4a8a; }
+.t-amber  { --t-soft: #f7efe0; --t-strong: #8a5f1f; }
+.t-teal   { --t-soft: #e3f1f1; --t-strong: #2e6b6b; }
+@media (prefers-color-scheme: dark) {
+  :root { --rose-soft: #3a2421; --rose-strong: #f0a898; }
+  .t-green  { --t-soft: #1f3329; --t-strong: #8fd1ad; }
+  .t-rose   { --t-soft: #3a2421; --t-strong: #f0a898; }
+  .t-blue   { --t-soft: #1e2a3a; --t-strong: #9cbde6; }
+  .t-violet { --t-soft: #2a2540; --t-strong: #c0b2ec; }
+  .t-amber  { --t-soft: #3a2e17; --t-strong: #f0c27a; }
+  .t-teal   { --t-soft: #1b3333; --t-strong: #8fd6d6; }
+}
+.picon { background: var(--t-soft, var(--accent-weak)); color: var(--t-strong, var(--accent-text)); }
+.picon.sm { width: 30px; height: 30px; border-radius: 9px; font-size: 16px; display: inline-grid; vertical-align: middle; margin-inline-end: 8px; }
+.card.toned { border-inline-start: 5px solid var(--t-strong); }
+.charge.toned .progress span, .coll-card.toned .progress span, .month-nav.toned .progress span { background: var(--t-strong); }
+
+/* "טרם שולם" בצבע משלו, תמיד עם המילה והסמל */
+.st-unpaid { background: var(--rose-soft); color: var(--rose-strong); }
+.st-text-unpaid { color: var(--rose-strong); font-weight: 500; }
+.tone-rose { background: var(--rose-soft); color: var(--rose-strong); }
+
+/* עדכונים אחרונים: מקופל עד שלוחצים */
+.feed { padding: 0; margin-top: 20px; }
+.feed > summary {
+  list-style: none; cursor: pointer; padding: 16px; font-weight: 500;
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+}
+.feed > summary::-webkit-details-marker { display: none; }
+.feed-title { display: flex; align-items: center; gap: 8px; }
+.feed-count { background: var(--surface-2); color: var(--muted); border-radius: 999px; padding: 0 10px; font-size: 14px; }
+.feed[open] > summary { border-bottom: 1px solid var(--border); }
+.feed .list { padding: 0 16px; }
+.feed .row:last-child { border-bottom: 0; }
+
+/* טקסט גדול יותר, כמו ב-DocuMate (קהל שצריך קריאה נוחה) */
+body { font-size: 17px; }
+.small { font-size: 15px; }
+.xs { font-size: 13px; }
