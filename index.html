@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#1f7a5c">
+  <title>ועד הבית</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a href="#/home" class="brand"><i class="ti ti-building-community" aria-hidden="true"></i><span id="brand-name">ועד הבית</span></a>
+    <a href="#/admin" class="icon-btn" id="admin-link" aria-label="כניסת ועד"><i class="ti ti-lock" aria-hidden="true"></i></a>
+  </header>
+  <div id="admin-banner" class="admin-banner" hidden></div>
+
+  <main id="main" class="main">
+    <div class="loading">טוען...</div>
+  </main>
+
+  <nav class="bottomnav" aria-label="ניווט ראשי">
+    <a href="#/home" data-tab="home"><i class="ti ti-home" aria-hidden="true"></i><span>ראשי</span></a>
+    <a href="#/dues" data-tab="dues"><i class="ti ti-calendar" aria-hidden="true"></i><span>דמי ועד</span></a>
+    <a href="#/payments" data-tab="payments"><i class="ti ti-coin" aria-hidden="true"></i><span>גביות</span></a>
+    <a href="#/projects" data-tab="projects"><i class="ti ti-tool" aria-hidden="true"></i><span>פעולות</span></a>
+    <a href="#/docs" data-tab="docs"><i class="ti ti-files" aria-hidden="true"></i><span>מסמכים</span></a>
+  </nav>
+
+  <div id="sheet-root" hidden></div>
+  <div id="lightbox" class="lightbox" hidden></div>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <div id="dialog-root" hidden></div>
+
+  <script src="config.js"></script>
+  <script src="seed.js"></script>
+  <script src="db.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
