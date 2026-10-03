@@ -76,6 +76,21 @@
         Object.keys(d.settings).forEach(k => { d.settings[k] = fix(d.settings[k]); });
         d.version = 3;
       }
+      if (d.version < 4) {
+        // גרסה 4: אין יותר לשונית "גביות", וכל גבייה שייכת לפעולה. גבייה בלי פעולה
+        // (או עם פעולה שנמחקה) הופכת לפעולה באותו שם, והתשלומים שלה נשארים במקומם.
+        const ids = new Set(d.projects.map(p => p.id));
+        let order = Math.max(0, ...d.projects.map(p => p.order || 0));
+        for (const c of d.collections) {
+          if (c.series || (c.projectId && ids.has(c.projectId))) continue;
+          const p = { id: "p-" + c.id, title: c.title || "גבייה", icon: "tool", status: "planning", statusNote: "", summary: "",
+            order: ++order, archived: !!c.archived, createdAt: c.createdAt || new Date().toISOString() };
+          d.projects.push(p);
+          ids.add(p.id);
+          c.projectId = p.id;
+        }
+        d.version = 4;
+      }
       this._data = d;
       this._save();
       return d;

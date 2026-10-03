@@ -4,17 +4,7 @@
 //  הגביות, הפעולות והסטטוסים שלהן.
 // ===================================================================
 // בונה רשומת גבייה לכל חודש בטווח ("YYYY-MM"). משמש גם את הגדרות דמי הוועד באתר.
-window.VAAD_MONTH_NAMES = ["ינואר", "פברואר", "מרץ", "אפריל", "מאי", "יוני", "יולי", "אוגוסט", "ספטמבר", "אוקטובר", "נובמבר", "דצמבר"];
-window.VAAD_MONTH_RANGE = function (from, to) {
-  const out = [];
-  let [y, m] = from.split("-").map(Number);
-  const [ty, tm] = to.split("-").map(Number);
-  while ((y < ty || (y === ty && m <= tm)) && out.length < 120) {
-    out.push(`${y}-${String(m).padStart(2, "0")}`);
-    if (++m > 12) { m = 1; y++; }
-  }
-  return out;
-};
+// VAAD_MONTH_RANGE ו-VAAD_MONTH_NAMES מוגדרים ב-format.js, שנטען לפני הקובץ הזה.
 window.VAAD_DUES_MONTHS = function (from, to, amount = null) {
   return window.VAAD_MONTH_RANGE(from, to).map(ym => {
     const [y, m] = ym.split("-").map(Number);
@@ -27,7 +17,7 @@ window.VAAD_DUES_MONTHS = function (from, to, amount = null) {
 };
 
 window.VAAD_SEED = {
-  version: 3,
+  version: 4,
   settings: {
     buildingName: "ועד הבית",
     address: "",
