@@ -36,7 +36,7 @@
   const FILE_ACCEPT = "image/*,video/*,application/pdf,.doc,.docx,.xls,.xlsx";
   const UNIT = "תת חלקה";
 
-  const S = { data: null, admin: false, routeKey: "", files: new Map(), urls: new Map() };
+  const S = { data: null, admin: false, routeKey: "", files: new Map(), urls: new Map(), fold: {} };
   const $main = document.getElementById("main");
 
   /* ============================== עזרים ============================== */
@@ -265,7 +265,17 @@
         ${floors.join("")}
         ${!n ? `<div class="floor">${empty("עוד לא הוגדרו פעולות.")}</div>` : ""}
         <section class="lobby">
-          <div class="lobby-head"><span class="lobby-door" aria-hidden="true"></span><span class="lobby-title">${icon("bell")} לוח המודעות בלובי</span></div>
+          <div class="lobby-head">
+            <svg class="lobby-door" viewBox="0 0 66 56" aria-hidden="true">
+              <path class="ld-frame" d="M4 54V22a20 20 0 0 1 40 0v32z"/>
+              <path class="ld-glass" d="M9 54V23a15 15 0 0 1 30 0v31z"/>
+              <path class="ld-bar" d="M24 8v46M9 25h30"/>
+              <circle class="ld-knob" cx="20.5" cy="40" r="1.8"/><circle class="ld-knob" cx="27.5" cy="40" r="1.8"/>
+              <rect class="ld-step" x="0" y="52" width="48" height="4" rx="2"/>
+              <path class="ld-leaf" d="M57 38c-6-2-8-9-5-14 4 3 6 8 5 14zM58 38c1-7 5-11 9-11-1 6-4 10-9 11zM57.5 38c-1-5 0-11 1-15 2 4 2 10-1 15z"/>
+              <path class="ld-pot" d="M51 38h14l-2 16h-10z"/>
+            </svg>
+            <span class="lobby-title">לוח המודעות בלובי</span></div>
           ${feed.length ? `<div class="feedline">${feed.map(f => {
             const p = f.projectId ? find("projects", f.projectId) : null;
             return `<a class="fitem t-${toneOf(p)}" href="${p ? `#/project/${esc(p.id)}` : "#/projects"}">
@@ -347,8 +357,9 @@
       </div>
       ${statusTable(sel)}
 
-      <h2 class="sec">מצב כל ${UNIT} עד היום</h2>
-      <div class="ugrid">${us.map(u => {
+      <details class="card fold" data-fold="units" ${S.fold.units ? "open" : ""}>
+        <summary>מצב כל ${UNIT} עד היום</summary>
+        <div class="ugrid">${us.map(u => {
         const d = duesSummary(u);
         const st = d.ok ? "paid" : "unpaid";
         return `<a class="ucard st-${st}" href="#/unit/${esc(u.id)}">
@@ -357,8 +368,9 @@
           <span class="ustate">${d.text}</span></span>
         </a>`;
       }).join("")}</div>
+      </details>
 
-      <details class="card full-table" ${S.duesTableOpen ? "open" : ""}>
+      <details class="card fold" data-fold="table" ${S.fold.table ? "open" : ""}>
         <summary>הטבלה המלאה של כל החודשים</summary>
         ${fullTable}
       </details>
@@ -1414,7 +1426,7 @@
   document.addEventListener("toggle", e => {
     const c = e.target.classList;
     if (!c) return;
-    if (c.contains("full-table")) S.duesTableOpen = e.target.open;
+    if (e.target.dataset && e.target.dataset.fold) S.fold[e.target.dataset.fold] = e.target.open;
   }, true);
 
   document.addEventListener("keydown", e => {
