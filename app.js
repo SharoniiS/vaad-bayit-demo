@@ -1379,8 +1379,39 @@
   // שינוי בלשונית אחרת → מרעננים את התצוגה כאן
   window.addEventListener("storage", e => { if (e.key === DB.KEY) reload(); });
 
+  /* ======================== גרסה חדשה של האתר ========================
+     GitHub Pages נותן לדפדפן לשמור את index.html במטמון עד 10 דקות, ובזמן הזה
+     גם סגירה ופתיחה מחדש מציגות גרסה ישנה. לכן בכל כניסה (ובכל חזרה לאתר
+     מאפליקציה אחרת) בודקים את version.json, שתמיד נטען מהשרת. אם הגרסה שם שונה
+     מזו שבדף, טוענים את הדף מחדש עם ?v=<גרסה> בכתובת, כתובת חדשה שלא נמצאת במטמון.
+     פעם אחת לכל גרסה בכל לשונית, כדי שלא תהיה לולאה. */
+  async function updateIfNewVersion() {
+    if (!window.VAAD_VERSION) return false;
+    try {
+      const res = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
+      if (!res.ok) return false;
+      const { v } = await res.json();
+      if (!v || v === window.VAAD_VERSION) return false;
+      const key = "vaad-reloaded-" + v;
+      try { if (sessionStorage.getItem(key)) return false; sessionStorage.setItem(key, "1"); } catch { return false; }
+      const url = new URL(location.href);
+      url.searchParams.set("v", v);
+      location.replace(url.toString());
+      return true;
+    } catch {
+      return false;
+    }
+  }
+  // חזרה לאתר מאפליקציה אחרת (למשל אתר שנשאר פתוח בטלפון): בודקים שוב, אבל לא באמצע מילוי טופס
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible" && document.getElementById("sheet-root").hidden) updateIfNewVersion();
+  });
+
   /* ============================== הפעלה ============================== */
   (async function init() {
+    // קודם בודקים אם יש גרסה חדשה (לכל היותר שנייה וחצי), כדי לא להציג גרסה ישנה
+    const reloading = await Promise.race([updateIfNewVersion(), new Promise(r => setTimeout(() => r(false), 1500))]);
+    if (reloading) return;
     try {
       S.admin = (await DB.session()).isAdmin;
       await reload();

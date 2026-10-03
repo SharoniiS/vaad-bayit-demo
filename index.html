@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&display=swap">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=20261003d">
+  <link rel="stylesheet" href="styles.css?v=20261003-1355">
 </head>
 <body>
   <header class="topbar">
@@ -37,11 +37,13 @@
   <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
   <div id="dialog-root" hidden></div>
 
-  <script src="config.js?v=20261003d"></script>
-  <script src="format.js?v=20261003d"></script>
-  <script src="seed.js?v=20261003d"></script>
-  <script src="domain.js?v=20261003d"></script>
-  <script src="db.js?v=20261003d"></script>
-  <script src="app.js?v=20261003d"></script>
+  <!-- גרסת הדף. app.js משווה אותה ל-version.json בכל כניסה (setup/bump-version.js מעדכן את שתיהן) -->
+  <script>window.VAAD_VERSION = "20261003-1355";</script>
+  <script src="config.js?v=20261003-1355"></script>
+  <script src="format.js?v=20261003-1355"></script>
+  <script src="seed.js?v=20261003-1355"></script>
+  <script src="domain.js?v=20261003-1355"></script>
+  <script src="db.js?v=20261003-1355"></script>
+  <script src="app.js?v=20261003-1355"></script>
 </body>
 </html>
