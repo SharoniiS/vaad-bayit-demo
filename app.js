@@ -36,7 +36,7 @@
   const FILE_ACCEPT = "image/*,video/*,application/pdf,.doc,.docx,.xls,.xlsx";
   const UNIT = "תת חלקה";
 
-  const S = { data: null, admin: false, routeKey: "", files: new Map(), urls: new Map(), fold: {} };
+  const S = { data: null, admin: false, canAdmin: false, gate: null, routeKey: "", files: new Map(), urls: new Map(), fold: {} };
   const $main = document.getElementById("main");
 
   /* ============================== עזרים ============================== */
@@ -601,13 +601,18 @@
   VIEWS.admin = () => {
     if (DB.isSnapshot) return `<div class="page-head"><h1>תצוגה לדוגמה</h1></div><div class="card">זו גרסת תצוגה לקריאה בלבד. העריכה תהיה זמינה באתר הקבוע.</div>`;
     if (!S.admin) {
+      if (!S.canAdmin) return `
+        <div class="page-head"><h1>החשבון שלי</h1></div>
+        <div class="card"><p>הצפייה פתוחה לכל דיירי הבניין. רק הוועד יכול לערוך.</p></div>
+        ${accountBox()}`;
       return `
         <div class="page-head"><h1>כניסת ועד</h1></div>
         <div class="card">
           <p>מצב ניהול מאפשר להוסיף ולערוך תשלומים, פעולות, מסמכים ותמונות.</p>
-          ${DB.isCloud ? "" : `<p class="muted small">האתר פועל כרגע במצב מקומי (הנתונים נשמרים רק בדפדפן הזה), ולכן אין סיסמה. אחרי החיבור לענן הכניסה תהיה עם מייל וסיסמה.</p>`}
+          ${DB.isCloud ? "" : `<p class="muted small">האתר פועל כרגע במצב מקומי (הנתונים נשמרים רק בדפדפן הזה), ולכן אין סיסמה. בענן הכניסה היא עם חשבון גוגל.</p>`}
           <button class="btn primary" data-act="admin-login">${icon("lock-open")}כניסה למצב ניהול</button>
-        </div>`;
+        </div>
+        ${accountBox()}`;
     }
     const st = S.data.settings;
     return `
@@ -639,13 +644,162 @@
       <div class="sec-head"><h2 class="sec">פעולות</h2>${adminBtn("edit-project", "הוספה")}</div>
       <div class="card list">${projects(true).map(p => `<div class="row">${projIcon(p)}<a class="grow row-title" href="#/project/${esc(p.id)}">${esc(p.title)}</a>${p.archived ? `<span class="xs muted">בארכיון</span>` : statusPill(p.status)}${editBtn("edit-project", `data-id="${esc(p.id)}"`)}</div>`).join("")}</div>
 
+      ${DB.isCloud ? `
+      <div class="sec-head"><h2 class="sec">דיירים והזמנות</h2></div>
+      <div class="card">
+        <p class="small">שולחים לדיירים קישור, והם נכנסים עם חשבון הגוגל שלהם. מי שלא הצטרף דרך קישור לא רואה את הבניין.</p>
+        <div class="btn-row">
+          <button class="btn primary" data-act="invite" data-role="tenant">${icon("share")}קישור לדיירים</button>
+          <button class="btn" data-act="invite" data-role="committee">${icon("share")}קישור לחברי ועד</button>
+        </div>
+        <button class="btn small danger-ghost mt" data-act="invite-renew">${icon("refresh")}החלפת הקישורים</button>
+      </div>
+      <div class="card list" id="members-box"><div class="row muted">טוען...</div></div>` : ""}
+
       <div class="card mt">
         <button class="btn" data-act="admin-logout">${icon("logout")}יציאה ממצב ניהול</button>
         ${DB.isCloud ? "" : `<button class="btn danger-ghost" data-act="reset-local">${icon("restore")}איפוס לנתוני הפתיחה</button>
         <p class="muted xs">מצב מקומי: הנתונים נשמרים רק בדפדפן הזה ולא יעברו אוטומטית לענן.</p>`}
       </div>
+      ${accountBox()}
     `;
   };
+
+  /* ===================== ענן: כניסה, בניינים והזמנות =====================
+     במצב מקומי ובתצוגה לדוגמה אין כניסה, ולכן כל החלק הזה פעיל רק כש-DB.isCloud. */
+  const ROLE_LABEL = { committee: "ועד", tenant: "דייר" };
+
+  // החשבון המחובר: מעבר בין בניינים, בניין חדש, התנתקות
+  const accountBox = () => !DB.isCloud || !DB.user ? "" : `
+    <div class="card list mt">
+      <div class="row"><span class="grow muted">חשבון</span><span>${esc(DB.user.email || "")}</span></div>
+      ${DB.memberships.length > 1 ? `<button class="row" data-act="switch-building">${icon("switch-horizontal")}<span class="grow">מעבר לבניין אחר</span></button>` : ""}
+      ${DB.memberships.length ? `<button class="row" data-act="new-building">${icon("building-plus")}<span class="grow">הקמת בניין נוסף</span></button>` : ""}
+      <button class="row" data-act="logout">${icon("logout")}<span class="grow">התנתקות</span></button>
+    </div>`;
+
+  // המסכים שלפני האפליקציה: לא מחוברים, הזמנה, בחירת בניין, אין בניין
+  function gateView(st) {
+    const inv = st.invite;
+    const invLine = inv ? `<p>הוזמנת להצטרף ל<b>${esc(inv.buildingName || "בניין")}</b>${inv.role === "committee" ? " כחבר ועד" : ""}.</p>` : "";
+    if (st.state === "signed-out") return `
+      <div class="gate card">
+        <h1>ועד הבית</h1>
+        ${invLine || `<p>כל מה שקורה בבניין במקום אחד: דמי ועד, פעולות, קבלות ותמונות.</p>`}
+        <button class="btn primary" data-act="google-login">${icon("brand-google")}כניסה עם גוגל</button>
+      </div>`;
+    if (st.state === "join") return inv ? `
+      <div class="gate card">
+        <h1>הצטרפות לבניין</h1>
+        ${invLine}
+        <button class="btn primary" data-act="join-accept">${icon("door-enter")}הצטרפות</button>
+        <button class="btn" data-act="join-decline">לא עכשיו</button>
+      </div>` : `
+      <div class="gate card">
+        <h1>הקישור לא בתוקף</h1>
+        <p>אפשר לבקש מהוועד קישור חדש.</p>
+        <button class="btn" data-act="join-decline">המשך</button>
+      </div>`;
+    if (st.state === "pick") return `
+      <div class="page-head"><h1>באיזה בניין?</h1></div>
+      <div class="card list">${st.buildings.map(b => `<button class="row" data-act="pick-building" data-id="${esc(b.building_id)}">${icon("building")}<span class="grow row-title">${esc(b.name)}</span><span class="xs muted">${ROLE_LABEL[b.role] || ""}</span></button>`).join("")}</div>
+      ${accountBox()}`;
+    return `
+      <div class="gate card">
+        <h1>ברוכים הבאים</h1>
+        <p>החשבון הזה עדיין לא שייך לאף בניין.</p>
+        <p class="muted small">דיירים מצטרפים דרך קישור שהוועד שולח. מי שקיבל קישור כזה צריך לפתוח אותו.</p>
+        <button class="btn primary" data-act="new-building">${icon("building-plus")}הקמת בניין חדש</button>
+      </div>
+      ${accountBox()}`;
+  }
+
+  function showGate(st) {
+    S.gate = st;
+    S.data = null;
+    document.body.classList.add("gated");
+    $main.innerHTML = gateView(st);
+  }
+
+  async function enterApp() {
+    S.gate = null;
+    document.body.classList.remove("gated");
+    S.urls.clear();
+    const se = await DB.session();
+    S.admin = se.isAdmin;
+    S.canAdmin = se.canAdmin;
+    await reload();
+  }
+
+  async function startCloud() {
+    const st = await DB.start();
+    if (st.state === "ready") return enterApp();
+    showGate(st);
+  }
+
+  function buildingSheet() {
+    openSheet({
+      title: "הקמת בניין חדש",
+      intro: `<p class="muted small">מי שמקים את הבניין הוא הוועד שלו. אחר כך מוסיפים תתי חלקות ודמי ועד, ושולחים לדיירים קישור הצטרפות.</p>`,
+      fields: [
+        { name: "buildingName", label: "שם הבניין", type: "text", required: true, placeholder: "הרימון 5" },
+        { name: "address", label: "כתובת", type: "text" }
+      ],
+      submitLabel: "הקמה",
+      onSubmit: async v => {
+        await DB.createBuilding({ buildingName: v.buildingName, address: v.address });
+        S.gate = null;
+        document.body.classList.remove("gated");
+        S.urls.clear();
+        S.admin = S.canAdmin = true;
+      },
+      after: () => { location.hash = "#/admin"; }
+    });
+  }
+
+  // שיתוף קישור הצטרפות: בטלפון נפתח חלון השיתוף (וואטסאפ וכו'), במחשב הקישור מועתק
+  async function shareInvite(role) {
+    let url;
+    try { url = await DB.inviteLink(role); } catch (e) { console.error(e); return notice("לא הצלחנו ליצור קישור. אפשר לנסות שוב."); }
+    const name = S.data.settings.buildingName || "הבניין";
+    const text = role === "committee" ? `הצטרפות לוועד של ${name}` : `הצטרפות לאתר הבניין ${name}`;
+    if (navigator.share) {
+      try { await navigator.share({ title: name, text, url }); return; } catch (e) { if (e.name === "AbortError") return; }
+    }
+    try { await navigator.clipboard.writeText(url); toast("הקישור הועתק. אפשר להדביק אותו בוואטסאפ או במייל."); }
+    catch { await notice(`${text}:\n${url}`); }
+  }
+
+  // רשימת החברים בבניין, נטענת אחרי הרינדור של דף הניהול
+  async function hydrateMembers() {
+    const box = document.getElementById("members-box");
+    if (!box || box.dataset.ready) return;
+    box.dataset.ready = "1";
+    try {
+      const ms = await DB.members();
+      box.innerHTML = ms.map(m => `<div class="row">
+          <div class="grow"><div>${esc(m.name || m.email || "")}${m.me ? ` <span class="xs muted">החשבון הזה</span>` : ""}</div><div class="xs muted">${esc(m.email || "")}</div></div>
+          ${pill(ROLE_LABEL[m.role] || "", m.role === "committee" ? "info" : "neutral")}
+          ${m.me ? "" : `<button class="icon-btn" data-act="member" data-id="${esc(m.user_id)}" data-role="${esc(m.role)}" data-name="${esc(m.name || m.email || "")}" aria-label="עריכה">${icon("pencil")}</button>`}
+        </div>`).join("");
+    } catch (e) {
+      console.error(e);
+      box.innerHTML = `<div class="row muted">לא הצלחנו לטעון את רשימת החברים.</div>`;
+    }
+  }
+
+  function memberSheet(m) {
+    openSheet({
+      title: m.name || "חבר בבניין",
+      fields: [{ name: "role", label: "תפקיד", type: "select", value: m.role, options: [{ value: "tenant", label: "דייר, צפייה בלבד" }, { value: "committee", label: "ועד, צפייה ועריכה" }] }],
+      onSubmit: async v => { await DB.setMemberRole(m.id, v.role); },
+      deleteLabel: "הסרה מהבניין",
+      onDelete: async () => {
+        if (!await confirmDanger(`להסיר את ${m.name || "החבר"} מהבניין? כדי לחזור צריך קישור הצטרפות חדש.`, "הסרה")) return false;
+        await DB.removeMember(m.id);
+      }
+    });
+  }
 
   function notFound(href, label) {
     return `${back(href, label)}${empty("הדף לא נמצא.")}`;
@@ -687,10 +841,11 @@
       : S.admin ? `${icon("pencil")} מצב ניהול${DB.isCloud ? "" : " · מקומי"} · <a href="#/admin">הגדרות</a>` : "";
     const al = document.getElementById("admin-link");
     al.hidden = !!DB.isSnapshot;
-    al.innerHTML = icon(S.admin ? "settings" : "lock");
-    al.setAttribute("aria-label", S.admin ? "ניהול" : "כניסת ועד");
+    al.innerHTML = icon(S.admin ? "settings" : S.canAdmin ? "lock" : "user-circle");
+    al.setAttribute("aria-label", S.admin ? "ניהול" : S.canAdmin ? "כניסת ועד" : "החשבון שלי");
     if (key !== S.routeKey) { window.scrollTo(0, 0); S.routeKey = key; }
     hydrateFiles();
+    hydrateMembers();
   }
 
   async function reload() {
@@ -1419,6 +1574,23 @@
       case "edit-settings": settingsSheet(); break;
       case "lightbox": openLightbox(ds.group, ds.key); break;
       case "admin-login": await DB.signInAdmin(); S.admin = true; render(); break;
+      case "google-login": await DB.signInWithGoogle(); break;
+      case "join-accept":
+        try { await DB.joinBuilding(S.gate.invite.token); location.hash = "#/home"; await enterApp(); }
+        catch (e) { console.error(e); DB.dropInvite(); await notice("ההצטרפות נכשלה. אפשר לבקש מהוועד קישור חדש."); await startCloud(); }
+        break;
+      case "join-decline": DB.dropInvite(); await startCloud(); break;
+      case "pick-building": DB.useBuilding(ds.id); location.hash = "#/home"; await enterApp(); break;
+      case "switch-building": showGate({ state: "pick", buildings: DB.memberships }); break;
+      case "new-building": buildingSheet(); break;
+      case "logout": await DB.logout(); S.admin = S.canAdmin = false; location.hash = "#/home"; await startCloud(); break;
+      case "invite": await shareInvite(ds.role); break;
+      case "invite-renew":
+        if (!await confirmDanger("ליצור קישורים חדשים? הקישורים הקודמים יפסיקו לעבוד. מי שכבר הצטרף נשאר.", "קישורים חדשים")) return;
+        try { await DB.inviteLink("tenant", true); await DB.inviteLink("committee", true); toast("נוצרו קישורים חדשים."); }
+        catch (e) { console.error(e); await notice("לא הצלחנו ליצור קישורים חדשים."); }
+        break;
+      case "member": memberSheet({ id: ds.id, role: ds.role, name: ds.name }); break;
       case "admin-logout": await DB.signOut(); S.admin = false; location.hash = "#/home"; render(); break;
       case "reset-local":
         if (!await confirmDanger("לאפס את כל הנתונים המקומיים ולחזור לנתוני הפתיחה? כל מה שהוזן כאן יימחק.", "איפוס")) return;
@@ -1469,7 +1641,10 @@
   }
   // חזרה לאתר מאפליקציה אחרת (למשל אתר שנשאר פתוח בטלפון): בודקים שוב, אבל לא באמצע מילוי טופס
   document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible" && document.getElementById("sheet-root").hidden) updateIfNewVersion();
+    if (document.visibilityState !== "visible" || !document.getElementById("sheet-root").hidden) return;
+    updateIfNewVersion();
+    // בענן אחרים יכולים לשנות נתונים בזמן שהאתר ברקע, אז טוענים מחדש
+    if (DB.isCloud && S.data) reload().catch(e => console.error(e));
   });
 
   /* ============================== הפעלה ============================== */
@@ -1478,7 +1653,9 @@
     const reloading = await Promise.race([updateIfNewVersion(), new Promise(r => setTimeout(() => r(false), 1500))]);
     if (reloading) return;
     try {
+      if (DB.isCloud) return await startCloud();
       S.admin = (await DB.session()).isAdmin;
+      S.canAdmin = !DB.isSnapshot;
       await reload();
     } catch (e) {
       console.error(e);
