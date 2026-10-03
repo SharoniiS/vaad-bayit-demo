@@ -68,8 +68,12 @@
 
   /* חודשים */
   const collTitle = c => c.series === "dues" ? `דמי ועד ${monthLong(c.month)}` : c.title;
-  // החודש שמוצג כ"נוכחי": החודש הנוכחי אם קיים בטווח, אחרת האחרון שעבר, אחרת הראשון
-  const focusMonth = () => { const ms = duesMonths(); return ms.filter(c => c.month <= curMonth()).pop() || ms[0] || null; };
+  // החודש שמוצג כ"נוכחי": החודש הנוכחי אם קיים בטווח, אחרת האחרון שעבר, אחרת הראשון.
+  // בתצוגה לדוגמה נפתחים על החודש הקודם, שכבר נסגר, ולא על חודש שרק התחיל
+  const focusMonth = () => {
+    const ms = duesMonths(), now = curMonth();
+    return (DB.isSnapshot && ms.filter(c => c.month < now).pop()) || ms.filter(c => c.month <= now).pop() || ms[0] || null;
+  };
   const docsOf = (projectId, kind) => T("documents").filter(d => (projectId === undefined || (d.projectId || null) === projectId) && (!kind || d.kind === kind)).sort(byDateDesc);
   const unitName = u => `${UNIT} ${esc(u.label)}`;
 
@@ -1387,7 +1391,7 @@
         if (next) { S.duesMonth = next.id; render(); }
         break;
       }
-      case "dues-now": S.duesMonth = null; render(); break;
+      case "dues-now": S.duesMonth = (duesMonths().find(c => c.month === curMonth()) || {}).id || null; render(); break;
       case "new-charge": {
         const p = find("projects", ds.project);
         collectionSheet(null, { title: p ? p.title : "", projectId: ds.project });
