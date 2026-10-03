@@ -96,8 +96,6 @@
     const tail = left > 0 ? `, חסרים ${money(left)}` : left < 0 ? `, נותרה יתרה של ${money(-left)} שהועברה לקופת הוועד המשותפת` : ", הגבייה הושלמה";
     return `נגבו ${money(pr.collected)} מתוך ${money(pr.target.value)}${tail}`;
   }
-  // פס התקדמות: לפי כסף כשיש יעד, אחרת לפי מספר המשלמים
-  const collBar = pr => pr.target ? progressBar(Math.min(pr.collected, pr.target.value), pr.target.value) : progressBar(pr.paid, pr.total);
 
 
   /* =========================== רכיבי תצוגה =========================== */
@@ -491,7 +489,7 @@
         <div class="head-actions">${editBtn("edit-collection", `data-id="${esc(c.id)}"`)}</div>
       </div>
       <div class="card">
-        ${c.series ? progressBar(pr.paid, pr.total) : collBar(pr)}
+        ${progressBar(pr.paid, pr.total)}
         <div class="small"><b>${pr.paid} מתוך ${pr.total} שילמו</b> · ${moneyLine(pr)}</div>
         ${pr.target && S.admin ? `<div class="muted xs">הסכום הנדרש: ${esc(TARGET_SOURCE[pr.target.source] || "")}</div>` : ""}
       </div>
@@ -1417,7 +1415,6 @@
     const c = e.target.classList;
     if (!c) return;
     if (c.contains("full-table")) S.duesTableOpen = e.target.open;
-    if (c.contains("feed")) S.feedOpen = e.target.open;
   }, true);
 
   document.addEventListener("keydown", e => {
