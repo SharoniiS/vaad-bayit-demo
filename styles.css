@@ -2,50 +2,48 @@
    ועד הבית, עיצוב. נבנה קודם כול לטלפון, ומתרחב למחשב.
    =================================================================== */
 :root {
-  --bg: #f4f5f2;
+  --bg: #fff4ef;
   --surface: #ffffff;
-  --surface-2: #f0f2ee;
-  --text: #1c2320;
-  --muted: #5d6964;
-  --faint: #8b9590;
-  --border: #e0e4df;
-  --accent: #1f7a5c;
-  --accent-hover: #186449;
-  --accent-weak: #e2f1ea;
-  --accent-text: #15634a;
-  --ok: #2b7a33;       --ok-bg: #e5f3e6;
-  --warn: #8f5600;     --warn-bg: #fbefd9;
-  --info: #1d5ea6;     --info-bg: #e4eefa;
-  --danger: #b3261e;   --danger-bg: #fbe8e6;
-  --neutral: #4d5753;  --neutral-bg: #eceeeb;
-  --rose-soft: #f8e9e6; --rose-strong: #9b4d3f;
-  --radius: 14px;
-  --radius-sm: 9px;
+  --surface-2: #f8eef2;
+  --text: #2a1e3b;
+  --muted: #6c5f7e;
+  --faint: #9b8fab;
+  --border: #f0e2e9;
+  --accent: #d6336c;
+  --accent-hover: #bd2a5e;
+  --accent-weak: #fce4ee;
+  --accent-text: #b0245a;
+  --ok: #188a4e;       --ok-bg: #dcf5e6;   --ok-main: #22b366;
+  --warn: #a35f00;     --warn-bg: #fff0d4;
+  --info: #2a62c9;     --info-bg: #e3edff;
+  --danger: #c5283d;   --danger-bg: #ffe5e9;
+  --neutral: #5b5068;  --neutral-bg: #f1ebf3;
+  --rose-soft: #ffe6ea; --rose-strong: #c43a55;
+  /* כתמי הרקע, כפתור ראשי וסמל המותג */
+  --blob-1: #ffc9da; --blob-2: #ffe0b8; --blob-3: #c9f0e8;
+  --hero-a: #e8407a; --hero-b: #ff8a3d;
+  /* הבניין במסך הראשי: קירות, וגג הקופה */
+  --wall: #eadcd6; --wall-dark: #d9c7c0; --sky-line: #b9aac4;
+  --cash-a: #e4efff; --cash-b: #efe7ff; --cash-ink: #2a2f5a; --cash-chip: rgba(255, 255, 255, .7);
+  --lift: 0 1px 2px rgba(80, 30, 60, .05), 0 8px 24px -12px rgba(120, 40, 80, .22);
+  --radius: 22px;
+  --radius-sm: 14px;
   --nav-h: 62px;
   --top-h: 54px;
-  --shadow: 0 1px 2px rgba(20, 30, 25, .06);
+  --display: "Fredoka", "Rubik", system-ui, sans-serif;
+  --body: "Rubik", "Heebo", system-ui, sans-serif;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #121614;
-    --surface: #1b201e;
-    --surface-2: #232927;
-    --text: #e8ece9;
-    --muted: #a3ada8;
-    --faint: #7c8681;
-    --border: #2e3532;
-    --accent: #3fae86;
-    --accent-hover: #4cc196;
-    --accent-weak: #1d3a30;
-    --accent-text: #7fd6b3;
-    --ok: #7fcf86;       --ok-bg: #1e3522;
-    --warn: #f0b860;     --warn-bg: #3a2c12;
-    --info: #8ab8ee;     --info-bg: #1b2c42;
-    --danger: #f0928b;   --danger-bg: #3d1d1b;
-    --neutral: #b4bdb9;  --neutral-bg: #2a302d;
-    --rose-soft: #3a2421; --rose-strong: #f0a898;
-    --shadow: none;
+    --bg: #17121f; --surface: #221a2e; --surface-2: #2c2339; --text: #f4eef9; --muted: #b8acc9; --faint: #8a7e9c; --border: #3a2f48;
+    --accent: #ff5c93; --accent-hover: #ff77a6; --accent-weak: #42213a; --accent-text: #ff8fb5;
+    --ok: #6fe0a0; --ok-bg: #173a29; --ok-main: #34c77a; --warn: #ffc56b; --warn-bg: #3d2d12; --info: #93b8ff; --info-bg: #1c2a47;
+    --danger: #ff8d9d; --danger-bg: #44202a; --neutral: #c4b9d2; --neutral-bg: #30273d; --rose-soft: #45222e; --rose-strong: #ff9fb2;
+    --blob-1: #4a1f3a; --blob-2: #3f2a18; --blob-3: #163a37; --hero-a: #c42c66; --hero-b: #e26b22;
+    --wall: #33293f; --wall-dark: #2a2135; --sky-line: #6b5d80;
+    --cash-a: #24304d; --cash-b: #2e2550; --cash-ink: #e8eaff; --cash-chip: rgba(255, 255, 255, .1);
+    --lift: 0 10px 30px -14px rgba(0, 0, 0, .6);
     color-scheme: dark;
   }
 }
@@ -55,17 +53,22 @@
 html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
-  font-family: "Heebo", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  font-family: var(--body);
   font-size: 17px;
   line-height: 1.55;
-  background: var(--bg);
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(42rem 26rem at 110% -6%, var(--blob-1), transparent 60%),
+    radial-gradient(30rem 22rem at -20% 30%, var(--blob-2), transparent 62%),
+    radial-gradient(34rem 24rem at 120% 80%, var(--blob-3), transparent 60%);
+  background-attachment: fixed;
   color: var(--text);
   -webkit-tap-highlight-color: transparent;
 }
 body.sheet-open { overflow: hidden; }
 a { color: var(--accent-text); text-decoration: none; }
-h1 { font-size: 22px; font-weight: 700; margin: 0; line-height: 1.3; }
-h2 { font-size: 18px; font-weight: 500; margin: 0; }
+h1 { font-family: var(--display); font-size: 26px; font-weight: 600; margin: 0; line-height: 1.3; text-wrap: balance; }
+h2 { font-family: var(--display); font-size: 18px; font-weight: 500; margin: 0; }
 h3 { font-size: 15px; font-weight: 500; margin: 0; }
 p { margin: 0 0 10px; }
 .ti { font-size: 1.15em; vertical-align: -0.15em; }
@@ -78,7 +81,6 @@ p { margin: 0 0 10px; }
 .warn-text { color: var(--warn); }
 .note { color: var(--muted); white-space: pre-wrap; }
 .prose { white-space: pre-wrap; }
-.clamp { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
 /* ---------- מסגרת ---------- */
 .topbar {
@@ -87,56 +89,53 @@ p { margin: 0 0 10px; }
   display: flex; align-items: center; justify-content: space-between; gap: 8px;
   padding: 0 16px;
   padding-top: env(safe-area-inset-top);
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg) 70%, transparent);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
 }
-.brand { display: flex; align-items: center; gap: 8px; color: var(--text); font-weight: 700; font-size: 17px; min-width: 0; }
+.brand { display: flex; align-items: center; gap: 8px; color: var(--text); font-family: var(--display); font-weight: 600; font-size: 19px; min-width: 0; }
 .brand span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.brand .ti { color: var(--accent); font-size: 24px; }
+.brand .ti { color: #fff; background: linear-gradient(135deg, var(--hero-a), var(--hero-b)); border-radius: 12px; width: 34px; height: 34px; display: grid; place-items: center; font-size: 20px; }
 .admin-banner {
   position: sticky; top: var(--top-h); z-index: 19;
   background: var(--warn-bg); color: var(--warn);
   font-size: 13px; text-align: center; padding: 4px 12px;
 }
 .admin-banner a { color: inherit; text-decoration: underline; }
-.admin-banner.demo { background: var(--info-bg); color: var(--info); }
+.admin-banner.demo { background: transparent; color: var(--muted); }
 
 .main {
   max-width: 760px; margin: 0 auto;
-  padding: 16px 16px calc(var(--nav-h) + 28px + env(safe-area-inset-bottom));
+  padding: 16px 16px calc(var(--nav-h) + 44px + env(safe-area-inset-bottom));
 }
 .loading { text-align: center; color: var(--muted); padding: 60px 0; }
 
+/* סרגל ניווט צף */
 .bottomnav {
-  position: fixed; bottom: 0; inset-inline: 0; z-index: 20;
-  display: flex;
-  height: calc(var(--nav-h) + env(safe-area-inset-bottom));
-  padding-bottom: env(safe-area-inset-bottom);
-  background: var(--surface);
-  border-top: 1px solid var(--border);
+  position: fixed; bottom: calc(10px + env(safe-area-inset-bottom)); inset-inline: 12px; z-index: 20;
+  display: flex; height: var(--nav-h); padding: 6px;
+  max-width: 520px; margin: 0 auto;
+  background: var(--surface); border-radius: 26px; box-shadow: var(--lift), 0 0 0 1px var(--border);
 }
 .bottomnav a {
-  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
-  color: var(--faint); font-size: 12.5px;
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  border-radius: 20px; color: var(--muted); font-size: 12.5px; font-weight: 500; transition: background .2s, color .2s;
 }
 .bottomnav a .ti { font-size: 23px; }
 .bottomnav a span { white-space: nowrap; }
-.bottomnav a.on { color: var(--accent-text); font-weight: 500; }
-.bottomnav a.on .ti { background: var(--accent-weak); border-radius: 999px; padding: 2px 12px; }
+.bottomnav a.on { background: var(--accent-weak); color: var(--accent-text); }
 
 /* ---------- רכיבים ---------- */
 .card {
   display: block;
   background: var(--surface);
-  border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 14px 16px;
+  padding: 16px 18px;
   margin-bottom: 12px;
-  box-shadow: var(--shadow);
+  box-shadow: var(--lift);
   color: var(--text);
 }
 .card.link:active, .row.link:active { background: var(--surface-2); }
-.card.list { padding: 0 16px; }
+.card.list { padding: 2px 18px; }
 .row {
   display: flex; align-items: center; gap: 12px;
   padding: 12px 0;
@@ -150,19 +149,18 @@ button.row { width: 100%; background: none; border: 0; border-bottom: 1px solid 
 
 .page-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin: 4px 0 12px; }
 .page-head .row { border: 0; padding: 0; align-items: flex-start; }
-.page-head h1 + .pill { margin-top: 4px; }
 .head-actions { display: flex; gap: 6px; flex-shrink: 0; }
-.back { display: inline-flex; align-items: center; gap: 4px; font-size: 14px; color: var(--muted); padding: 4px 0 8px; }
+.back { display: inline-flex; align-items: center; gap: 4px; font-size: 14px; font-weight: 500; color: var(--muted); background: var(--surface); border-radius: 999px; padding: 6px 14px 6px 12px; box-shadow: var(--lift); margin-bottom: 14px; }
 
-.sec { font-size: 16px; font-weight: 500; margin: 22px 0 10px; color: var(--text); }
+.sec { font-family: var(--display); font-size: 20px; font-weight: 600; margin: 28px 2px 12px; letter-spacing: -.01em; color: var(--text); }
 .sec-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.sec-head .sec { margin: 22px 0 10px; }
+.sec-head .sec { margin: 28px 2px 12px; }
 .sec-head h3 { margin: 4px 0 8px; }
 
 .pill {
   display: inline-block; white-space: nowrap;
   font-size: 12.5px; font-weight: 500;
-  padding: 2px 10px; border-radius: 999px;
+  padding: 3px 12px; border-radius: 999px;
 }
 .tone-ok { background: var(--ok-bg); color: var(--ok); }
 .tone-warn { background: var(--warn-bg); color: var(--warn); }
@@ -175,7 +173,7 @@ button.row { width: 100%; background: none; border: 0; border-bottom: 1px solid 
   display: grid; place-items: center;
   background: var(--t-soft, var(--accent-weak)); color: var(--t-strong, var(--accent-text)); font-size: 20px;
 }
-.doc-icon { flex-shrink: 0; width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; background: var(--surface-2); color: var(--muted); }
+.doc-icon { flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--accent-weak); color: var(--accent-text); }
 
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 6px;
@@ -185,8 +183,7 @@ button.row { width: 100%; background: none; border: 0; border-bottom: 1px solid 
   background: var(--surface); color: var(--text); cursor: pointer;
 }
 .btn.small { min-height: 36px; padding: 0 12px; font-size: 14px; }
-.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-.btn.primary:hover { background: var(--accent-hover); }
+.btn.primary { background: linear-gradient(135deg, var(--hero-a), var(--hero-b)); border: 0; color: #fff; }
 .btn.primary:disabled { opacity: .7; }
 .btn.danger-ghost { color: var(--danger); border-color: transparent; background: none; }
 .icon-btn {
@@ -196,20 +193,18 @@ button.row { width: 100%; background: none; border: 0; border-bottom: 1px solid 
 }
 .icon-btn:hover { background: var(--surface-2); }
 
-.empty { text-align: center; color: var(--muted); padding: 18px 12px; border: 1px dashed var(--border); border-radius: var(--radius); margin-bottom: 12px; }
+.empty { text-align: center; color: var(--muted); padding: 18px 12px; border: 2px dashed var(--border); border-radius: var(--radius); margin-bottom: 12px; }
 .empty.small { padding: 10px; font-size: 14px; }
-.callout { background: var(--accent-weak); color: var(--text); border-radius: var(--radius-sm); padding: 10px 14px; margin-bottom: 12px; font-size: 15px; }
+.callout { background: var(--surface); color: var(--text); border-radius: var(--radius-sm); box-shadow: var(--lift); padding: 12px 16px; margin-bottom: 12px; font-size: 15px; }
+.callout::before { content: "\201D"; font-family: var(--display); color: var(--accent); font-size: 34px; line-height: 0; vertical-align: -14px; margin-inline-end: 6px; }
 
-/* ---------- מסך ראשי ---------- */
-.hero .big { font-size: 34px; font-weight: 700; line-height: 1.2; margin: 2px 0 6px; }
-.hero-meta { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 14px; color: var(--muted); }
+/* פס התקדמות: נשאר רק בדף חודש דמי ועד */
 .progress { height: 8px; background: var(--neutral-bg); border-radius: 999px; overflow: hidden; margin: 10px 0 6px; }
 .progress span { display: block; height: 100%; background: var(--ok); border-radius: 999px; }
-.coll-card .row-title .ti { color: var(--accent-text); }
 
 .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; }
-.stat-num { font-size: 22px; font-weight: 700; }
+.stat { background: var(--surface); border-radius: var(--radius); box-shadow: var(--lift); padding: 12px 14px; }
+.stat-num { font-family: var(--display); font-size: 26px; font-weight: 600; }
 .stat-num.warn { color: var(--warn); }
 
 /* ---------- טבלת תשלומים ---------- */
@@ -228,16 +223,17 @@ button.row { width: 100%; background: none; border: 0; border-bottom: 1px solid 
 
 .cell {
   display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
-  width: 46px; height: 46px; border-radius: 12px; border: 0;
+  width: 46px; height: 46px; border-radius: 50%; border: 0;
   font: inherit; font-size: 20px; cursor: pointer; line-height: 1;
 }
 .cell .xs { font-size: 10.5px; margin-top: 2px; }
 .cell.mini { width: 30px; height: 30px; font-size: 16px; border-radius: 9px; flex-shrink: 0; cursor: default; }
-.st-paid { background: var(--ok-bg); color: var(--ok); }
-.st-partial { background: var(--warn-bg); color: var(--warn); }
-.st-unpaid { background: var(--rose-soft); color: var(--rose-strong); }
-.st-exempt { background: transparent; color: var(--faint); border: 1px dashed var(--border); }
-.st-future { background: transparent; color: var(--faint); }
+/* מצב תשלום בעיגולים ובשבבי חודש. בכרטיסי תתי החלקות (ucard) ובעיגולים הקטנים (ud) יש עיצוב משלהם */
+:is(.cell, .mchip).st-paid { background: var(--ok-main); color: #fff; }
+:is(.cell, .mchip).st-partial { background: var(--warn-bg); color: var(--warn); }
+:is(.cell, .mchip).st-unpaid { background: var(--rose-soft); color: var(--rose-strong); }
+:is(.cell, .mchip).st-exempt { background: transparent; color: var(--faint); border: 1px dashed var(--border); }
+:is(.cell, .mchip).st-future { background: transparent; color: var(--faint); }
 .legend { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 12px 4px; font-size: 13px; color: var(--muted); }
 .legend > span { display: inline-flex; align-items: center; gap: 6px; }
 .legend .cell.mini { width: 24px; height: 24px; font-size: 14px; }
@@ -260,10 +256,10 @@ button.row { width: 100%; background: none; border: 0; border-bottom: 1px solid 
   background: var(--surface-2); color: var(--text); font: inherit; font-weight: 700; font-size: 14px; cursor: pointer;
 }
 
-.month-chips { display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: 6px; margin: 10px 0 4px; }
+.month-chips { display: grid; grid-template-columns: repeat(auto-fill, minmax(58px, 1fr)); gap: 8px; margin: 10px 0 4px; }
 .mchip {
   display: flex; flex-direction: column; align-items: center; gap: 1px;
-  padding: 6px 2px; border-radius: 10px; border: 0; font: inherit; font-size: 12.5px; cursor: pointer;
+  padding: 8px 2px; border-radius: 18px; border: 0; font: inherit; font-size: 12.5px; cursor: pointer;
 }
 .mchip .ti { font-size: 16px; }
 .mchip.st-future { border: 1px dashed var(--border); color: var(--faint); }
@@ -295,33 +291,37 @@ details.pays summary { cursor: pointer; color: var(--accent-text); padding: 4px 
 .row.total { font-weight: 500; }
 
 /* ---------- פעולות ---------- */
-.prj-card .row { border: 0; padding: 0 0 8px; }
-.prj-card .meta { display: flex; gap: 12px; margin-top: 6px; }
-.stepper { list-style: none; display: grid; grid-template-columns: repeat(6, 1fr); gap: 0; padding: 0; margin: 8px 0 16px; }
+.stepper {
+  list-style: none; display: grid; grid-template-columns: repeat(6, 1fr); gap: 0; margin: 8px 0 16px;
+  background: var(--surface); border-radius: var(--radius); box-shadow: var(--lift); padding: 16px 6px 12px;
+}
 .stepper li { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
 .stepper li::before {
-  content: ""; position: absolute; top: 11px; inset-inline-start: 50%; width: 100%; height: 2px;
-  background: var(--border); z-index: 0;
+  content: ""; position: absolute; top: 13px; inset-inline-start: 50%; width: 100%; height: 4px; border-radius: 4px;
+  background: var(--surface-2); z-index: 0;
 }
 .stepper li:last-child::before { display: none; }
 .stepper li.past::before { background: var(--accent); }
 .stepper .dot {
   position: relative; z-index: 1;
-  width: 24px; height: 24px; border-radius: 999px;
-  display: grid; place-items: center; font-size: 13px;
-  background: var(--surface); border: 2px solid var(--border); color: #fff;
+  width: 30px; height: 30px; border-radius: 999px;
+  display: grid; place-items: center; font-size: 16px;
+  background: var(--surface-2); color: #fff;
 }
-.stepper li.past .dot { background: var(--accent); border-color: var(--accent); }
-.stepper li.current .dot { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-weak); }
-.stepper li.current .dot::after { content: ""; width: 10px; height: 10px; border-radius: 999px; background: var(--accent); }
+.stepper li.past .dot { background: var(--accent); }
+.stepper li.current .dot { background: var(--surface); box-shadow: 0 0 0 4px var(--accent-weak), inset 0 0 0 3px var(--accent); }
+.stepper li.current .dot::after { content: ""; width: 12px; height: 12px; border-radius: 999px; background: var(--accent); }
 .stepper .lbl { font-size: 11.5px; line-height: 1.25; color: var(--faint); }
 .stepper li.current .lbl { color: var(--accent-text); font-weight: 500; }
 .stepper li.past .lbl { color: var(--muted); }
+/* פעולה שהושלמה: כל השביל ירוק */
+.stepper.all-done li.past::before, .stepper.all-done li.past .dot { background: var(--ok-main); }
+.stepper.all-done li .lbl { color: var(--ok); }
 
 .doc { align-items: flex-start; }
 .doc .doc-title { font-weight: 500; color: var(--text); }
 .doc a.doc-title { color: var(--accent-text); }
-.doc.chosen .doc-icon { background: var(--ok-bg); color: var(--ok); }
+.doc.chosen .doc-icon { background: var(--ok-main); color: #fff; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
 .chip {
   display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;
@@ -332,10 +332,10 @@ details.pays summary { cursor: pointer; color: var(--accent-text); padding: 4px 
 .missing { opacity: .5; pointer-events: none; }
 
 .ba { display: grid; grid-template-columns: 1fr; gap: 4px 16px; }
-.photo-group { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 12px; margin-bottom: 10px; }
+.photo-group { background: var(--surface); box-shadow: var(--lift); border-radius: var(--radius); padding: 10px 12px; margin-bottom: 10px; }
 .photo-group .icon-btn { width: 32px; height: 32px; }
 .thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 6px; margin-top: 6px; }
-.thumb { position: relative; padding: 0; border: 0; background: var(--surface-2); border-radius: 8px; overflow: hidden; aspect-ratio: 1; cursor: zoom-in; }
+.thumb { position: relative; padding: 0; border: 0; background: var(--surface-2); border-radius: 14px; overflow: hidden; aspect-ratio: 1; cursor: zoom-in; }
 .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 .unit-num { min-width: 32px; font-size: 17px; }
@@ -477,35 +477,18 @@ details.field summary { cursor: pointer; font-size: 14px; font-weight: 500; padd
 /* ---------- דף פעולה: לשוניות פנימיות "פרטים" / "גבייה" ---------- */
 .subtabs {
   display: flex; gap: 4px; padding: 4px; margin: 0 0 14px;
-  background: var(--surface-2); border-radius: 999px;
+  background: var(--surface); border-radius: 999px; box-shadow: var(--lift);
 }
 .subtabs a {
   flex: 1; min-height: 44px; display: flex; align-items: center; justify-content: center; gap: 6px;
   border-radius: 999px; color: var(--muted); font-weight: 500; font-size: 16px;
 }
-.subtabs a.on { background: var(--surface); color: var(--t-strong, var(--accent-text)); box-shadow: var(--shadow); }
+.subtabs a.on { background: var(--t-main, var(--accent)); color: #fff; }
 .subtab-count { font-size: 13px; font-weight: 400; color: var(--muted); }
-.charge-big { font-size: 20px; font-weight: 700; }
-.prj-charge { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
-.prj-charge .progress { margin: 6px 0 0; }
+.subtabs a.on .subtab-count { color: rgba(255, 255, 255, .85); }
 
-/* טבלת מצב: מספר + בעלים | מצב במילים | אייקון */
-.stable { display: flex; flex-direction: column; }
-.srow {
-  display: flex; align-items: center; gap: 10px;
-  width: 100%; padding: 10px 0; min-height: 60px;
-  background: none; border: 0; border-bottom: 1px solid var(--border);
-  font: inherit; color: var(--text); text-align: start; cursor: pointer;
-}
-a.srow { text-decoration: none; }
-.stable .srow:last-child { border-bottom: 0; }
-/* שורה ראשונה: מספר + בעלים. שורה שנייה: המצב במילים (יכול לרדת שורה, לא נחתך) */
-.srow-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
-.srow-unit { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
-.srow-unit b { font-size: 18px; line-height: 1.2; flex-shrink: 0; }
-.srow-unit .muted { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* מצב דמי הוועד במילים (דף תת חלקה) */
 .srow-text { font-size: 15px; font-weight: 500; text-align: start; }
-.srow .cell { flex-shrink: 0; cursor: inherit; }
 .st-text-paid { color: var(--ok); }
 .st-text-partial { color: var(--warn); }
 .st-text-unpaid { color: var(--rose-strong); font-weight: 500; }
@@ -521,17 +504,22 @@ a.srow { text-decoration: none; }
 .lightbox video { max-width: 100%; max-height: calc(100% - 90px); background: #000; }
 
 /* ---------- דמי ועד: ניווט בין חודשים ---------- */
-.month-nav { padding: 14px 14px 12px; }
+.month-card { background: var(--surface); border-radius: 28px; box-shadow: var(--lift); padding: 14px 16px 18px; margin-bottom: 14px; position: relative; overflow: hidden; }
+.month-card::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 76px; background: linear-gradient(120deg, var(--t-soft), color-mix(in srgb, var(--t-glow) 40%, var(--t-soft))); }
+.month-card > * { position: relative; }
 .mnav { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.mnav-btn { min-height: 48px; padding: 0 10px; font-size: 15px; gap: 2px; }
+.mnav-btn { width: 48px; height: 48px; border-radius: 50%; border: 0; background: var(--surface); color: var(--t-strong); font-size: 22px; display: grid; place-items: center; cursor: pointer; box-shadow: var(--lift); padding: 0; }
 .mnav-btn:disabled { opacity: .35; cursor: default; }
 .mnav-title { text-align: center; flex: 1; min-width: 0; }
-.mnav-month { font-size: 20px; font-weight: 700; line-height: 1.25; white-space: nowrap; }
-.mnav-sum { font-size: 16px; margin-top: 12px; }
+.mnav-when { font-size: 13px; color: var(--t-strong); font-weight: 500; }
+.mnav-month { font-family: var(--display); font-size: 24px; font-weight: 600; line-height: 1.25; white-space: nowrap; }
+.mcard-sum { display: flex; align-items: center; gap: 16px; margin-top: 18px; }
+.mnav-sum { font-size: 17px; }
+.mnav-money { color: var(--muted); font-size: 15px; }
 .link-btn { background: none; border: 0; padding: 6px 0 0; font: inherit; font-size: 15px; color: var(--accent-text); text-decoration: underline; cursor: pointer; }
 
 /* הטבלה המלאה, מקופלת */
-.full-table { padding: 0; margin-top: 20px; }
+.full-table { margin-top: 20px; }
 .full-table > summary {
   list-style: none; cursor: pointer; padding: 16px; font-weight: 500;
   display: flex; align-items: center; justify-content: space-between;
@@ -542,69 +530,7 @@ a.srow { text-decoration: none; }
 .full-table .grid-wrap { border: 0; border-top: 1px solid var(--border); border-radius: 0; }
 .full-table .legend { padding: 0 12px 12px; }
 
-/* ---------- צבעים לפי פעולה (מתוך הטוקנים של DocuMate) ---------- */
-.t-green  { --t-soft: #e6f2ec; --t-strong: #2f6b4f; }
-.t-rose   { --t-soft: #f8e9e6; --t-strong: #9b4d3f; }
-.t-blue   { --t-soft: #e7eef7; --t-strong: #35577f; }
-.t-violet { --t-soft: #ece8f5; --t-strong: #5d4a8a; }
-.t-amber  { --t-soft: #f7efe0; --t-strong: #8a5f1f; }
-.t-teal   { --t-soft: #e3f1f1; --t-strong: #2e6b6b; }
-@media (prefers-color-scheme: dark) {
-  .t-green  { --t-soft: #1f3329; --t-strong: #8fd1ad; }
-  .t-rose   { --t-soft: #3a2421; --t-strong: #f0a898; }
-  .t-blue   { --t-soft: #1e2a3a; --t-strong: #9cbde6; }
-  .t-violet { --t-soft: #2a2540; --t-strong: #c0b2ec; }
-  .t-amber  { --t-soft: #3a2e17; --t-strong: #f0c27a; }
-  .t-teal   { --t-soft: #1b3333; --t-strong: #8fd6d6; }
-}
-.picon.sm { width: 30px; height: 30px; border-radius: 9px; font-size: 16px; display: inline-grid; vertical-align: middle; margin-inline-end: 8px; }
-.card.toned { border-inline-start: 5px solid var(--t-strong); }
-.card.toned .progress span { background: var(--t-strong); }
-
-/* עדכונים אחרונים: מקופל עד שלוחצים */
-.feed { padding: 0; margin-top: 20px; }
-.feed > summary {
-  list-style: none; cursor: pointer; padding: 16px; font-weight: 500;
-  display: flex; align-items: center; justify-content: space-between; gap: 10px;
-}
-.feed > summary::-webkit-details-marker { display: none; }
-.feed-title { display: flex; align-items: center; gap: 8px; }
-.feed-count { background: var(--surface-2); color: var(--muted); border-radius: 999px; padding: 0 10px; font-size: 14px; }
-.feed[open] > summary { border-bottom: 1px solid var(--border); }
-.feed .list { padding: 0 16px; }
-.feed .row:last-child { border-bottom: 0; }
-
-/* ===================================================================
-   כיוון "חצר": רך, צבעוני ומאויר. עיגולים, טבעות ואריחים במקום שורות וטבלאות.
-   צבעי הפעולות כמו פרחי החצר: בוגנוויליה, הדרים, זית, ים.
-   =================================================================== */
-:root {
-  --bg: #fff4ef;
-  --surface: #ffffff;
-  --surface-2: #f8eef2;
-  --text: #2a1e3b;
-  --muted: #6c5f7e;
-  --faint: #9b8fab;
-  --border: #f0e2e9;
-  --accent: #d6336c;
-  --accent-hover: #bd2a5e;
-  --accent-weak: #fce4ee;
-  --accent-text: #b0245a;
-  --ok: #188a4e;       --ok-bg: #dcf5e6;   --ok-main: #22b366;
-  --warn: #a35f00;     --warn-bg: #fff0d4;
-  --info: #2a62c9;     --info-bg: #e3edff;
-  --danger: #c5283d;   --danger-bg: #ffe5e9;
-  --neutral: #5b5068;  --neutral-bg: #f1ebf3;
-  --rose-soft: #ffe6ea; --rose-strong: #c43a55;
-  --blob-1: #ffc9da; --blob-2: #ffe0b8; --blob-3: #c9f0e8;
-  --hero-a: #e8407a; --hero-b: #ff8a3d;
-  --lift: 0 1px 2px rgba(80, 30, 60, .05), 0 8px 24px -12px rgba(120, 40, 80, .22);
-  --radius: 22px;
-  --radius-sm: 14px;
-  --display: "Fredoka", "Rubik", system-ui, sans-serif;
-  --body: "Rubik", "Heebo", system-ui, sans-serif;
-  color-scheme: light;
-}
+/* ---------- צבעים לפי פעולה: main לעיגולים ולסמלים, soft לרקעים, strong לטקסט ---------- */
 .t-green  { --t-main: #22b366; --t-soft: #dcf5e6; --t-strong: #157a44; --t-glow: #8fe3b4; }
 .t-rose   { --t-main: #f0507a; --t-soft: #ffe4ec; --t-strong: #c12d58; --t-glow: #ffa9c0; }
 .t-blue   { --t-main: #3d7bf2; --t-soft: #e3ecff; --t-strong: #2556c2; --t-glow: #a6c4ff; }
@@ -612,94 +538,16 @@ a.srow { text-decoration: none; }
 .t-amber  { --t-main: #f5a524; --t-soft: #fff0d2; --t-strong: #9a5a00; --t-glow: #ffd27d; }
 .t-teal   { --t-main: #14b0a6; --t-soft: #d9f5f2; --t-strong: #0b7a73; --t-glow: #86e3da; }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #17121f; --surface: #221a2e; --surface-2: #2c2339; --text: #f4eef9; --muted: #b8acc9; --faint: #8a7e9c; --border: #3a2f48;
-    --accent: #ff5c93; --accent-hover: #ff77a6; --accent-weak: #42213a; --accent-text: #ff8fb5;
-    --ok: #6fe0a0; --ok-bg: #173a29; --ok-main: #34c77a; --warn: #ffc56b; --warn-bg: #3d2d12; --info: #93b8ff; --info-bg: #1c2a47;
-    --danger: #ff8d9d; --danger-bg: #44202a; --neutral: #c4b9d2; --neutral-bg: #30273d; --rose-soft: #45222e; --rose-strong: #ff9fb2;
-    --blob-1: #4a1f3a; --blob-2: #3f2a18; --blob-3: #163a37; --hero-a: #c42c66; --hero-b: #e26b22;
-    --lift: 0 10px 30px -14px rgba(0, 0, 0, .6);
-    color-scheme: dark;
-  }
-  :root:not([data-theme="light"]) .t-green  { --t-soft: #173a29; --t-strong: #7fe3ab; }
-  :root:not([data-theme="light"]) .t-rose   { --t-soft: #45222e; --t-strong: #ff9fbb; }
-  :root:not([data-theme="light"]) .t-blue   { --t-soft: #1c2a47; --t-strong: #a4c2ff; }
-  :root:not([data-theme="light"]) .t-violet { --t-soft: #2f2350; --t-strong: #c8b4ff; }
-  :root:not([data-theme="light"]) .t-amber  { --t-soft: #3d2d12; --t-strong: #ffcf7a; }
-  :root:not([data-theme="light"]) .t-teal   { --t-soft: #123735; --t-strong: #7fe6dc; }
+  .t-green  { --t-soft: #173a29; --t-strong: #7fe3ab; }
+  .t-rose   { --t-soft: #45222e; --t-strong: #ff9fbb; }
+  .t-blue   { --t-soft: #1c2a47; --t-strong: #a4c2ff; }
+  .t-violet { --t-soft: #2f2350; --t-strong: #c8b4ff; }
+  .t-amber  { --t-soft: #3d2d12; --t-strong: #ffcf7a; }
+  .t-teal   { --t-soft: #123735; --t-strong: #7fe6dc; }
 }
-:root[data-theme="dark"] {
-  --bg: #17121f; --surface: #221a2e; --surface-2: #2c2339; --text: #f4eef9; --muted: #b8acc9; --faint: #8a7e9c; --border: #3a2f48;
-  --accent: #ff5c93; --accent-hover: #ff77a6; --accent-weak: #42213a; --accent-text: #ff8fb5;
-  --ok: #6fe0a0; --ok-bg: #173a29; --ok-main: #34c77a; --warn: #ffc56b; --warn-bg: #3d2d12; --info: #93b8ff; --info-bg: #1c2a47;
-  --danger: #ff8d9d; --danger-bg: #44202a; --neutral: #c4b9d2; --neutral-bg: #30273d; --rose-soft: #45222e; --rose-strong: #ff9fb2;
-  --blob-1: #4a1f3a; --blob-2: #3f2a18; --blob-3: #163a37; --hero-a: #c42c66; --hero-b: #e26b22;
-  --lift: 0 10px 30px -14px rgba(0, 0, 0, .6);
-  color-scheme: dark;
-}
-:root[data-theme="dark"] .t-green  { --t-soft: #173a29; --t-strong: #7fe3ab; }
-:root[data-theme="dark"] .t-rose   { --t-soft: #45222e; --t-strong: #ff9fbb; }
-:root[data-theme="dark"] .t-blue   { --t-soft: #1c2a47; --t-strong: #a4c2ff; }
-:root[data-theme="dark"] .t-violet { --t-soft: #2f2350; --t-strong: #c8b4ff; }
-:root[data-theme="dark"] .t-amber  { --t-soft: #3d2d12; --t-strong: #ffcf7a; }
-:root[data-theme="dark"] .t-teal   { --t-soft: #123735; --t-strong: #7fe6dc; }
 
-body {
-  font-family: var(--body);
-  background-color: var(--bg);
-  background-image:
-    radial-gradient(42rem 26rem at 110% -6%, var(--blob-1), transparent 60%),
-    radial-gradient(30rem 22rem at -20% 30%, var(--blob-2), transparent 62%),
-    radial-gradient(34rem 24rem at 120% 80%, var(--blob-3), transparent 60%);
-  background-attachment: fixed;
-}
-h1, h2, .sec, .hero-big, .ctile-title, .ptile-title, .pcard-title, .mnav-month, .charge-big, .ring-txt b, .ubadge, .stat-num { font-family: var(--display); }
-h1 { font-size: 26px; font-weight: 600; text-wrap: balance; }
-.sec { font-size: 20px; font-weight: 600; margin: 28px 2px 12px; letter-spacing: -.01em; }
-.sec-head .sec { margin: 28px 2px 12px; }
-
-/* מסגרת */
-.topbar { background: transparent; border-bottom: 0; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); background: color-mix(in srgb, var(--bg) 70%, transparent); }
-.brand { font-family: var(--display); font-weight: 600; font-size: 19px; }
-.brand .ti { color: #fff; background: linear-gradient(135deg, var(--hero-a), var(--hero-b)); border-radius: 12px; width: 34px; height: 34px; display: grid; place-items: center; font-size: 20px; }
-.admin-banner.demo { background: transparent; color: var(--muted); }
-.bottomnav {
-  inset-inline: 12px; bottom: calc(10px + env(safe-area-inset-bottom)); height: var(--nav-h); padding: 6px;
-  background: var(--surface); border: 0; border-radius: 26px; box-shadow: var(--lift), 0 0 0 1px var(--border);
-  max-width: 520px; margin: 0 auto;
-}
-.bottomnav a { border-radius: 20px; color: var(--muted); font-weight: 500; gap: 0; transition: background .2s, color .2s; }
-.bottomnav a.on { background: var(--accent-weak); color: var(--accent-text); }
-.bottomnav a.on .ti { background: none; padding: 0; }
-.main { padding-bottom: calc(var(--nav-h) + 44px + env(safe-area-inset-bottom)); }
-
-.card { border: 0; border-radius: var(--radius); box-shadow: var(--lift); padding: 16px 18px; }
-.card.list { padding: 2px 18px; }
-.row { border-bottom-color: var(--border); }
-.back { font-weight: 500; background: var(--surface); border-radius: 999px; padding: 6px 14px 6px 12px; box-shadow: var(--lift); margin-bottom: 14px; }
-.pill { font-weight: 500; padding: 3px 12px; }
-.empty { border: 2px dashed var(--border); border-radius: var(--radius); }
-.callout { background: var(--surface); border-radius: var(--radius-sm); box-shadow: var(--lift); border-inline-start: 0; position: relative; padding: 12px 16px 12px 16px; }
-.callout::before { content: "\201D"; font-family: var(--display); color: var(--accent); font-size: 34px; line-height: 0; vertical-align: -14px; margin-inline-end: 6px; }
-.btn { border-radius: 999px; }
-.btn.primary { background: linear-gradient(135deg, var(--hero-a), var(--hero-b)); border: 0; }
-
-/* קופה */
-.hero {
-  position: relative; overflow: hidden; isolation: isolate;
-  color: #fff; border-radius: 30px; padding: 22px 22px 20px;
-  background: linear-gradient(130deg, var(--hero-a), var(--hero-b));
-  box-shadow: 0 18px 40px -20px var(--hero-a);
-}
-.hero-art { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; }
-.hero-art circle { fill: #fff; }
-.ha-1 { opacity: .14; } .ha-2 { opacity: .1; } .ha-3 { opacity: .18; }
-.hero-label { font-size: 15px; opacity: .92; display: flex; align-items: center; gap: 6px; }
-.hero-big { font-size: 46px; font-weight: 600; line-height: 1.1; margin: 4px 0 12px; letter-spacing: -.01em; }
-.hero-flow { display: flex; flex-wrap: wrap; gap: 8px; }
-.hero-flow span { background: rgba(255, 255, 255, .2); border-radius: 999px; padding: 4px 12px; font-size: 14px; display: inline-flex; align-items: center; gap: 4px; }
-
-/* טבעת */
+/* ---------- עיגולים, טבעות ושבילים ---------- */
+/* טבעת התקדמות (ring ב-app.js) */
 .ring { position: relative; width: 74px; height: 74px; flex-shrink: 0; display: inline-grid; place-items: center; }
 .ring svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
 .ring circle { fill: none; stroke-width: 7; }
@@ -707,94 +555,116 @@ h1 { font-size: 26px; font-weight: 600; text-wrap: balance; }
 .ring-fg { stroke: var(--t-main, var(--accent)); stroke-linecap: round; }
 .ring.full .ring-fg { stroke: var(--ok-main); }
 .ring-txt { position: relative; display: flex; flex-direction: column; align-items: center; line-height: 1; }
-.ring-txt b { font-size: 22px; font-weight: 600; color: var(--text); }
+.ring-txt b { font-family: var(--display); font-size: 22px; font-weight: 600; color: var(--text); }
 .ring-txt small { font-size: 11px; color: var(--muted); margin-top: 2px; }
 .ring.big { width: 96px; height: 96px; }
 .ring.big .ring-txt b { font-size: 28px; }
 .ring.sm { width: 50px; height: 50px; }
 .ring.sm circle { stroke-width: 8; }
+.ring.sm .ring-txt { flex-direction: row; align-items: baseline; }
 .ring.sm .ring-txt b { font-size: 16px; }
 .ring.sm .ring-txt small { font-size: 10px; margin: 0; }
-.ring.sm .ring-txt { flex-direction: row; align-items: baseline; }
 
-/* אריחי גבייה */
-.ctiles { display: grid; grid-template-columns: 1fr; gap: 12px; }
-.ctile {
-  display: flex; align-items: center; gap: 16px; padding: 16px 18px;
-  background: var(--surface); border-radius: var(--radius); box-shadow: var(--lift); color: var(--text);
-  position: relative; overflow: hidden; transition: transform .15s;
-}
-.ctile::after { content: ""; position: absolute; inset-inline-end: -40px; top: -40px; width: 120px; height: 120px; border-radius: 50%; background: var(--t-soft); opacity: .7; z-index: 0; }
-.ctile > * { position: relative; z-index: 1; }
-.ctile:active, .ptile:active, .pcard:active, .ucard:active, .fitem:active { transform: scale(.98); }
-.ctile-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
-.ctile-kicker { font-size: 13px; font-weight: 500; color: var(--t-strong); display: flex; align-items: center; gap: 4px; }
-.ctile-title { font-size: 21px; font-weight: 600; line-height: 1.2; }
-.ctile-sub { font-size: 14px; color: var(--muted); }
+/* עיגול קטן לכל תת חלקה (unitDots) */
 .udots { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
 .ud { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-style: normal; font-size: 11.5px; font-weight: 500; }
 .ud .ti { font-size: 14px; vertical-align: 0; }
 .ud.st-paid { background: var(--ok-main); color: #fff; }
-.ud.st-unpaid { background: var(--surface-2); color: var(--muted); border: 0; }
+.ud.st-partial { background: var(--warn-bg); color: var(--warn); }
+.ud.st-unpaid { background: var(--surface-2); color: var(--muted); }
 .ud.st-future, .ud.st-exempt { background: transparent; color: var(--faint); border: 1.5px dashed var(--border); }
 
-/* אריחי פעולות */
-.ptiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.ptile {
-  display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 16px;
-  border-radius: var(--radius); background: var(--t-soft); color: var(--text); transition: transform .15s;
-  min-width: 0;
-}
+/* סמל פעולה בריבוע צבעוני */
 .ptile-ic {
   width: 48px; height: 48px; border-radius: 16px; display: grid; place-items: center; flex-shrink: 0;
   background: var(--t-main); color: #fff; font-size: 26px;
   box-shadow: 0 8px 18px -8px var(--t-main);
 }
 .ptile-ic .ti { vertical-align: 0; }
-.ptile-title { font-size: 19px; font-weight: 600; line-height: 1.2; }
-.slabel { display: inline-flex; align-items: center; gap: 4px; font-size: 13.5px; font-weight: 500; background: none !important; padding: 0; }
+
+/* שלב הפעולה במילים (statusLabel) */
+.slabel { display: inline-flex; align-items: center; gap: 4px; font-size: 13.5px; font-weight: 500; background: none; padding: 0; }
 .slabel.tone-ok { color: var(--ok); }
 .slabel.tone-warn { color: var(--warn); }
 .slabel.tone-info { color: var(--info); }
 .slabel.tone-neutral { color: var(--muted); }
-.journey { display: flex; align-items: center; gap: 0; width: 100%; max-width: 160px; }
+
+/* שביל השלבים בקטן (journey) */
+.journey { display: flex; align-items: center; width: 100%; max-width: 160px; }
 .journey i { flex: 1; height: 4px; background: color-mix(in srgb, var(--t-main) 22%, transparent); position: relative; }
-.journey i:first-child { border-radius: 4px 0 0 4px; } .journey i:last-child { border-radius: 0 4px 4px 0; }
-[dir="rtl"] .journey i:first-child { border-radius: 0 4px 4px 0; } [dir="rtl"] .journey i:last-child { border-radius: 4px 0 0 4px; }
-.journey i.past { background: var(--t-main); }
-.journey i.current { background: var(--t-main); }
+.journey i:first-child { border-start-start-radius: 4px; border-end-start-radius: 4px; }
+.journey i:last-child { border-start-end-radius: 4px; border-end-end-radius: 4px; }
+.journey i.past, .journey i.current { background: var(--t-main); }
 .journey i.current::after { content: ""; position: absolute; inset-inline-end: -5px; top: -4px; width: 12px; height: 12px; border-radius: 50%; background: var(--surface); border: 3px solid var(--t-main); box-sizing: border-box; }
 .journey.all-done i { background: var(--ok-main); }
 
-/* עדכונים */
-.feedline { display: flex; flex-direction: column; gap: 8px; position: relative; }
-.fitem { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 18px; background: var(--surface); box-shadow: var(--lift); color: var(--text); transition: transform .15s; }
+/* ---------- המסך הראשי כבניין: גג = קופה, קומה לכל נושא, לובי = עדכונים ---------- */
+.bld {
+  position: relative; margin-top: 4px; border-radius: 0 0 6px 6px;
+  /* הקיר מתחיל מתחת לציור הגג ונגמר מעל המדרכה */
+  background: linear-gradient(var(--wall), var(--wall)) no-repeat 0 53px / 100% calc(100% - 53px - 14px);
+}
+.bld-top { display: block; width: 100%; height: 54px; margin-bottom: -1px; }
+.bt-line { stroke: var(--sky-line); stroke-width: 3; stroke-linecap: round; }
+.bt-tank, .bt-box { fill: var(--wall-dark); }
+.bt-panel { fill: var(--cash-ink); opacity: .75; }
+.bt-grid { stroke: var(--cash-a); stroke-width: 1.5; }
+.bld > .roof, .bld > .floor, .bld > .lobby { position: relative; margin: 0 10px 8px; }
+.bld > .lobby { margin-bottom: 0; }
+
+.roof {
+  padding: 18px; color: var(--cash-ink);
+  background: linear-gradient(130deg, var(--cash-a), var(--cash-b));
+  border-top: 10px solid var(--wall-dark); border-radius: 6px 6px 18px 18px;
+}
+.hero-label { font-size: 15px; opacity: .92; display: flex; align-items: center; gap: 6px; }
+.hero-big { font-family: var(--display); font-size: 46px; font-weight: 600; line-height: 1.1; margin: 4px 0 12px; letter-spacing: -.01em; }
+.hero-flow { display: flex; flex-wrap: wrap; gap: 8px; }
+.hero-flow span { background: var(--cash-chip); border-radius: 999px; padding: 4px 12px; font-size: 14px; display: inline-flex; align-items: center; gap: 4px; }
+
+.floor {
+  display: flex; flex-direction: column; gap: 8px; padding: 14px; padding-inline-start: 18px; overflow: hidden;
+  color: var(--text); border-radius: 18px; transition: transform .15s;
+  background: color-mix(in srgb, var(--t-soft) 45%, var(--surface));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--t-soft) 90%, var(--surface));
+}
+.floor-body { display: flex; align-items: center; gap: 12px; }
+.floor .ptile-ic { width: 46px; height: 46px; font-size: 24px; border-radius: 15px; }
+.floor-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.floor-title { font-family: var(--display); font-size: 20px; font-weight: 600; line-height: 1.2; }
+.floor-sub { font-size: 14px; color: var(--muted); }
+.floor .journey { max-width: 170px; margin-top: 4px; }
+.floor .ring.sm .ring-bg { stroke: var(--t-soft); }
+/* שורות מתחת לכותרת מתיישרות עם הטקסט, אחרי הסמל */
+.floor-money, .floor .udots { padding-inline-start: 58px; }
+.floor-money { font-size: 13.5px; color: var(--muted); }
+.floor .udots { margin: 0; }
+.floor .ud { border-radius: 7px; width: 28px; height: 30px; }
+
+.lobby { background: var(--surface); border-radius: 18px 18px 6px 6px; padding: 14px; }
+.lobby-head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.lobby-door { width: 34px; height: 44px; flex-shrink: 0; border-radius: 17px 17px 3px 3px; background: linear-gradient(var(--cash-a), var(--cash-b)); box-shadow: inset 0 0 0 3px var(--wall-dark); position: relative; }
+.lobby-door::after { content: ""; position: absolute; inset-inline-end: 7px; top: 24px; width: 4px; height: 4px; border-radius: 50%; background: var(--cash-ink); }
+.lobby-title { font-family: var(--display); font-size: 19px; font-weight: 600; }
+.bld-ground { height: 14px; margin: 0 -6px; border-radius: 8px; background: var(--wall-dark); }
+
+/* עדכונים אחרונים בלובי */
+.feedline { display: flex; flex-direction: column; gap: 8px; }
+.fitem { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 18px; background: var(--surface-2); color: var(--text); transition: transform .15s; }
 .fdot { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--t-soft); color: var(--t-strong); flex-shrink: 0; }
 .ftext { display: block; font-weight: 500; }
 .fmeta { display: block; font-size: 13px; color: var(--muted); }
 
-/* דמי ועד */
-.month-card { background: var(--surface); border-radius: 28px; box-shadow: var(--lift); padding: 14px 16px 18px; margin-bottom: 14px; position: relative; overflow: hidden; }
-.month-card::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 76px; background: linear-gradient(120deg, var(--t-soft), color-mix(in srgb, var(--t-glow) 40%, var(--t-soft))); }
-.month-card > * { position: relative; }
-.mnav-btn { width: 48px; height: 48px; border-radius: 50%; border: 0; background: var(--surface); color: var(--t-strong); font-size: 22px; display: grid; place-items: center; cursor: pointer; box-shadow: var(--lift); min-height: 0; padding: 0; }
-.mnav-btn:disabled { opacity: .35; cursor: default; }
-.mnav-when { font-size: 13px; color: var(--t-strong); font-weight: 500; }
-.mnav-month { font-size: 24px; font-weight: 600; }
-.mcard-sum { display: flex; align-items: center; gap: 16px; margin-top: 18px; }
-.mnav-sum { font-size: 17px; margin: 0; }
-.mnav-money { color: var(--muted); font-size: 15px; }
-
+/* ---------- כרטיס לכל תת חלקה (דמי ועד, גבייה) ---------- */
 .ugrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr)); gap: 10px; margin-bottom: 12px; }
 .ucard {
   display: flex; align-items: center; gap: 12px; padding: 12px 14px; min-height: 68px;
   border: 0; border-radius: 20px; background: var(--surface); box-shadow: var(--lift);
   font: inherit; color: var(--text); text-align: start; cursor: pointer; transition: transform .15s;
 }
-.ucard.st-paid, .ucard.st-partial, .ucard.st-unpaid, .ucard.st-exempt, .ucard.st-future { background: var(--surface); color: var(--text); }
 .ubadge {
   width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0; display: grid; place-items: center;
-  font-size: 18px; font-weight: 600; background: var(--surface-2); color: var(--text);
+  font-family: var(--display); font-size: 18px; font-weight: 600; background: var(--surface-2); color: var(--text);
 }
 .ubadge .ti { font-size: 22px; vertical-align: 0; }
 .ucard.st-paid .ubadge { background: var(--ok-main); color: #fff; box-shadow: 0 6px 14px -6px var(--ok-main); }
@@ -809,34 +679,28 @@ h1 { font-size: 26px; font-weight: 600; text-wrap: balance; }
 .ucard.st-partial .ustate { color: var(--warn); }
 .ucard.st-unpaid .ustate { color: var(--rose-strong); }
 .ucard.st-exempt .ustate, .ucard.st-future .ustate { color: var(--muted); font-weight: 400; }
-.full-table { box-shadow: var(--lift); }
-.cell { border-radius: 50%; }
-.st-paid.cell, .mchip.st-paid { background: var(--ok-main); color: #fff; }
 
 /* דף תת חלקה */
 .uhead { display: flex; align-items: center; gap: 14px; }
 .ubadge.big { width: 64px; height: 64px; font-size: 26px; background: linear-gradient(135deg, var(--hero-a), var(--hero-b)); color: #fff; }
-.stat { border: 0; border-radius: var(--radius); box-shadow: var(--lift); }
-.stat-num { font-size: 26px; font-weight: 600; }
-.month-chips { grid-template-columns: repeat(auto-fill, minmax(58px, 1fr)); gap: 8px; }
-.mchip { border-radius: 18px; padding: 8px 2px; }
 
 /* גבייה בתוך פעולה */
 .charge-card { display: flex; align-items: center; gap: 16px; background: var(--surface); border-radius: var(--radius); box-shadow: var(--lift); padding: 16px 18px; margin-bottom: 14px; }
-.charge-big { font-size: 22px; font-weight: 600; }
+.charge-big { font-family: var(--display); font-size: 22px; font-weight: 600; }
 
-/* רשימת פעולות */
+/* ---------- רשימת פעולות ודף פעולה ---------- */
 .pcard {
   display: flex; flex-direction: column; gap: 10px; position: relative; overflow: hidden; isolation: isolate;
   background: var(--surface); border-radius: 26px; box-shadow: var(--lift); padding: 18px; margin-bottom: 14px; color: var(--text);
   transition: transform .15s;
 }
 .pcard::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 84px; background: var(--t-soft); z-index: -1; }
+/* הסמל הגדול והחיוור ברקע */
 .pcard-art { position: absolute; inset-inline-end: -14px; top: -18px; font-size: 130px; color: var(--t-main); opacity: .13; z-index: -1; line-height: 1; }
 .pcard-art .ti { vertical-align: 0; }
 .pcard-top { display: flex; align-items: center; gap: 14px; }
 .pcard-top .grow { display: flex; flex-direction: column; gap: 2px; }
-.pcard-title { font-size: 22px; font-weight: 600; line-height: 1.2; }
+.pcard-title { font-family: var(--display); font-size: 22px; font-weight: 600; line-height: 1.2; }
 .pcard .journey { max-width: none; margin: 4px 0; }
 .pcard-note { font-size: 15px; color: var(--muted); }
 .pcard-charge { display: flex; align-items: center; gap: 12px; background: var(--surface-2); border-radius: 18px; padding: 10px 12px; }
@@ -845,7 +709,6 @@ h1 { font-size: 26px; font-weight: 600; text-wrap: balance; }
 .pcard-meta { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; color: var(--muted); }
 .pcard-meta:empty { display: none; }
 
-/* דף פעולה */
 .phero {
   display: flex; align-items: center; gap: 14px; position: relative; overflow: hidden; isolation: isolate;
   background: var(--t-soft); border-radius: 28px; padding: 20px 18px; margin-bottom: 16px;
@@ -853,95 +716,6 @@ h1 { font-size: 26px; font-weight: 600; text-wrap: balance; }
 .phero .pcard-art { font-size: 150px; top: -26px; }
 .phero .ptile-ic { width: 60px; height: 60px; font-size: 32px; border-radius: 20px; }
 .phero h1 { font-size: 28px; }
-.subtabs { background: var(--surface); box-shadow: var(--lift); }
-.subtabs a.on { background: var(--t-main, var(--accent)); color: #fff; box-shadow: none; }
-.subtabs a.on .subtab-count { color: rgba(255, 255, 255, .85); }
-.stepper { background: var(--surface); border-radius: var(--radius); box-shadow: var(--lift); padding: 16px 6px 12px; }
-.stepper li::before { top: 13px; height: 4px; border-radius: 4px; background: var(--surface-2); }
-.stepper .dot { width: 30px; height: 30px; border: 0; background: var(--surface-2); font-size: 16px; }
-.stepper li.past::before { background: var(--accent); }
-.stepper li.past .dot { background: var(--accent); }
-.stepper li.current .dot { background: var(--surface); box-shadow: 0 0 0 4px var(--accent-weak), inset 0 0 0 3px var(--accent); }
-.stepper li.current .dot::after { width: 12px; height: 12px; }
-.stepper.all-done li.past::before, .stepper.all-done li.past .dot { background: var(--ok-main); }
-.stepper.all-done li .lbl { color: var(--ok); }
-.doc-icon { border-radius: 50%; background: var(--accent-weak); color: var(--accent-text); width: 40px; height: 40px; }
-.doc.chosen .doc-icon { background: var(--ok-main); color: #fff; }
-.photo-group { border: 0; box-shadow: var(--lift); border-radius: var(--radius); }
-.thumb { border-radius: 14px; }
-.chip { border-radius: 999px; }
 
-@media (min-width: 640px) {
-  .ctiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .ctile.wide { grid-column: 1 / -1; }
-  .ptiles { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-}
-@media (prefers-reduced-motion: reduce) { .ctile, .ptile, .pcard, .ucard, .fitem { transition: none; } }
-
-/* ===== המסך הראשי כבניין: גג = קופה, קומה לכל נושא, לובי = עדכונים ===== */
-:root { --wall: #eadcd6; --wall-dark: #d9c7c0; --cash-a: #e4efff; --cash-b: #efe7ff; --cash-ink: #2a2f5a; --cash-chip: rgba(255, 255, 255, .7); --sky-line: #b9aac4; }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) { --wall: #33293f; --wall-dark: #2a2135; --cash-a: #24304d; --cash-b: #2e2550; --cash-ink: #e8eaff; --cash-chip: rgba(255, 255, 255, .1); --sky-line: #6b5d80; }
-}
-:root[data-theme="dark"] { --wall: #33293f; --wall-dark: #2a2135; --cash-a: #24304d; --cash-b: #2e2550; --cash-ink: #e8eaff; --cash-chip: rgba(255, 255, 255, .1); --sky-line: #6b5d80; }
-
-.bld { position: relative; margin-top: 4px; }
-.bld-top { display: block; width: 100%; height: 54px; margin-bottom: -1px; }
-.bt-line { stroke: var(--sky-line); stroke-width: 3; stroke-linecap: round; }
-.bt-tank { fill: var(--wall-dark); }
-.bt-panel { fill: var(--cash-ink); opacity: .75; }
-.bt-grid { stroke: var(--cash-a); stroke-width: 1.5; }
-.bt-box { fill: var(--wall-dark); }
-.bld { background: linear-gradient(var(--wall), var(--wall)) no-repeat 0 53px / 100% calc(100% - 53px - 14px); border-radius: 0 0 6px 6px; }
-.bld > section, .bld > a.floor, .bld > .floor { position: relative; margin: 0 10px 8px; }
-.roof {
-  margin-top: 0 !important; padding: 18px 18px 18px 18px; padding-inline-start: 58px; border-radius: 18px;
-  background: linear-gradient(130deg, var(--cash-a), var(--cash-b)); color: var(--cash-ink);
-  border-top: 10px solid var(--wall-dark); border-radius: 6px 6px 18px 18px;
-}
-.bld .roof { margin-top: 10px; }
-.roof .hero-big { color: var(--cash-ink); }
-.roof .hero-flow span { background: var(--cash-chip); color: var(--cash-ink); }
-.floor-num {
-  position: absolute; inset-inline-start: 12px; top: 16px; width: 34px; height: 34px; border-radius: 50%;
-  display: grid; place-items: center; font-family: var(--display); font-weight: 600; font-size: 17px;
-  background: var(--surface); color: var(--t-strong, var(--cash-ink)); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--t-main, var(--cash-ink)) 35%, transparent);
-}
-.floor-num .ti { vertical-align: 0; font-size: 19px; }
-.floor {
-  display: flex; flex-direction: column; gap: 8px; padding: 14px 14px 18px; padding-inline-start: 58px;
-  background: var(--t-soft); color: var(--text); border-radius: 18px; transition: transform .15s; overflow: hidden;
-}
-/* מעקה מרפסת בתחתית כל קומה */
-.floor::after {
-  content: ""; position: absolute; inset-inline: 58px 14px; bottom: 6px; height: 7px;
-  background: repeating-linear-gradient(90deg, color-mix(in srgb, var(--t-main) 45%, transparent) 0 2px, transparent 2px 10px);
-  border-top: 2px solid color-mix(in srgb, var(--t-main) 45%, transparent);
-}
-.floor:active { transform: scale(.985); }
-.floor-body { display: flex; align-items: center; gap: 12px; }
-.floor .ptile-ic { width: 46px; height: 46px; font-size: 24px; border-radius: 15px; }
-.floor-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
-.floor-title { font-family: var(--display); font-size: 20px; font-weight: 600; line-height: 1.2; }
-.floor-sub { font-size: 14px; color: var(--muted); }
-.floor .journey { max-width: 170px; margin-top: 4px; }
-.floor .ring.sm .ring-bg { stroke: var(--surface); }
-.floor-money { font-size: 13.5px; color: var(--muted); padding-inline-start: 58px; }
-.floor .udots { margin: 0; padding-inline-start: 58px; }
-.floor .ud { border-radius: 7px; width: 28px; height: 30px; }
-.floor .ud.st-unpaid { background: var(--surface); }
-.lobby { background: var(--surface); border-radius: 18px 18px 6px 6px; padding: 14px; margin-bottom: 0 !important; }
-.lobby-head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
-.lobby-door { width: 34px; height: 44px; flex-shrink: 0; border-radius: 17px 17px 3px 3px; background: linear-gradient(var(--cash-a), var(--cash-b)); box-shadow: inset 0 0 0 3px var(--wall-dark); position: relative; }
-.lobby-door::after { content: ""; position: absolute; inset-inline-end: 7px; top: 24px; width: 4px; height: 4px; border-radius: 50%; background: var(--cash-ink); }
-.lobby-title { font-family: var(--display); font-size: 19px; font-weight: 600; }
-.lobby .fitem { box-shadow: none; background: var(--surface-2); }
-.bld-ground { height: 14px; margin: 0 -6px; border-radius: 8px; background: var(--wall-dark); }
-@media (prefers-reduced-motion: reduce) { .floor { transition: none; } }
-/* קומות: בלי מספור ובלי מעקה, רקע בהיר ושקט */
-.roof, .floor { padding-inline-start: 18px; }
-.floor { padding-bottom: 14px; background: color-mix(in srgb, var(--t-soft) 45%, var(--surface)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--t-soft) 90%, var(--surface)); }
-.floor::after { content: none; }
-.floor-money, .floor .udots { padding-inline-start: 58px; }
-.floor .ring.sm .ring-bg { stroke: var(--t-soft); }
-.floor .ud.st-unpaid { background: var(--surface-2); }
+.pcard:active, .ucard:active, .fitem:active, .floor:active { transform: scale(.985); }
+@media (prefers-reduced-motion: reduce) { .pcard, .ucard, .fitem, .floor { transition: none; } }
